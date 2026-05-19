@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 
 # Shared OpenAI client for all assignments.
-# Centralised here so both assignments (my-ai-assistant, business-assistant)
+# Centralised here so both assignments (my_ai_assistant, business_assistant)
 # import from one place. If we ever want to swap OpenAI for another provider
 # (e.g. Anthropic, Gemini, a local Ollama model), we only need to change this
 # file — every assignment that imports `client` will automatically use the

@@ -1,20 +1,12 @@
-import sys
-import os
 import json
 
-# Import the shared client from the assignments-level client.py.
+# Import the shared client from the assignments-level config.py.
 # This allows both assignments to share the same provider configuration.
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-from client import client
+from ..config import client
 
-from tools import (
-    calculate,
-    web_search,
-    analyze_data,
-    calculator_tool,
-    web_search_tool,
-    data_analyzer_tool,
-)
+from .tools.calculator import calculate, calculator_tool
+from .tools.web_search import web_search, web_search_tool
+from .tools.data_analyzer import analyze_data, data_analyzer_tool
 
 
 class EnhancedEmailWriter:
