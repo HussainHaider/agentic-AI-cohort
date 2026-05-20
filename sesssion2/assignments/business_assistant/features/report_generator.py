@@ -1,4 +1,4 @@
-from ...config import client as openai_client, DEFAULT_MODEL
+from .base import BaseFeature
 
 REPORT_TYPES = {
     "sales": "Sales Report",
@@ -8,11 +8,9 @@ REPORT_TYPES = {
 }
 
 
-class ReportGenerator:
+class ReportGenerator(BaseFeature):
     """Feature 2: Creates professional business reports from data analysis."""
 
-    def __init__(self):
-        self.client = openai_client
 
     def get_inputs(self) -> dict:
         """Collect all required inputs interactively from the user."""
@@ -84,17 +82,7 @@ class ReportGenerator:
             f"Data: {data}"
         )
 
-        messages = [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt},
-        ]
-
-        response = self.client.chat.completions.create(
-            model=DEFAULT_MODEL,
-            messages=messages,
-        )
-
-        return response.choices[0].message.content.strip()
+        return self._complete(system_prompt, user_prompt)
 
     # ------------------------------------------------------------------
     # Convenience wrappers for each report type

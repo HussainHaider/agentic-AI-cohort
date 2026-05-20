@@ -1,4 +1,4 @@
-from ...config import client as openai_client, DEFAULT_MODEL
+from .base import BaseFeature
 
 COMMUNICATION_TYPES = {
     "project proposal": "project proposal",
@@ -8,11 +8,9 @@ COMMUNICATION_TYPES = {
 }
 
 
-class ClientCommunicationDrafter:
+class ClientCommunicationDrafter(BaseFeature):
     """Feature 5: Drafts professional client communications."""
 
-    def __init__(self):
-        self.client = openai_client
 
     def get_inputs(self) -> dict:
         """Collect all required inputs interactively from the user."""
@@ -80,17 +78,7 @@ class ClientCommunicationDrafter:
             "explanatory text outside the communication itself."
         )
 
-        messages = [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt},
-        ]
-
-        response = self.client.chat.completions.create(
-            model=DEFAULT_MODEL,
-            messages=messages,
-        )
-
-        return response.choices[0].message.content.strip()
+        return self._complete(system_prompt, user_prompt)
 
     # ------------------------------------------------------------------
     # Convenience wrappers for each communication type

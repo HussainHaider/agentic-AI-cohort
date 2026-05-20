@@ -1,11 +1,9 @@
-from ...config import client as openai_client, DEFAULT_MODEL
+from .base import BaseFeature
 
 
-class MeetingSummarizer:
+class MeetingSummarizer(BaseFeature):
     """Feature 3: Converts meeting notes into structured summaries with action items."""
 
-    def __init__(self):
-        self.client = openai_client
 
     def get_inputs(self) -> dict:
         """Collect all required inputs interactively from the user."""
@@ -81,14 +79,4 @@ class MeetingSummarizer:
             f"Meeting Notes:\n{notes}"
         )
 
-        messages = [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt},
-        ]
-
-        response = self.client.chat.completions.create(
-            model=DEFAULT_MODEL,
-            messages=messages,
-        )
-
-        return response.choices[0].message.content.strip()
+        return self._complete(system_prompt, user_prompt)

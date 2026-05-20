@@ -1,16 +1,14 @@
 import json
-from ...config import client as openai_client, DEFAULT_MODEL
 from ..tools.web_search import web_search, web_search_tool
+from .base import BaseFeature
 
 RECIPIENT_TYPES = ["client", "team", "stakeholder", "supplier"]
 TONE_OPTIONS = ["formal", "professional", "friendly"]
 
 
-class SmartEmailWriter:
+class SmartEmailWriter(BaseFeature):
     """Feature 1: Writes professional business emails with optional market research."""
 
-    def __init__(self):
-        self.client = openai_client
 
     def get_inputs(self) -> dict:
         """Collect all required inputs interactively from the user."""
@@ -81,16 +79,4 @@ class SmartEmailWriter:
             f"{research_context}"
         )
 
-        messages = [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt},
-        ]
-
-        response = self.client.chat.completions.create(
-            model=DEFAULT_MODEL,
-            messages=messages,
-            tools=[web_search_tool],
-            tool_choice="none",
-        )
-
-        return response.choices[0].message.content.strip()
+        return self._complete(system_prompt, user_prompt, tools=[web_search_tool], tool_choice="none")

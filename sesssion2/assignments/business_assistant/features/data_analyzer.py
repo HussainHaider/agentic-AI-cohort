@@ -1,4 +1,4 @@
-from ...config import client as openai_client, DEFAULT_MODEL
+from .base import BaseFeature
 
 DATA_TYPES = {
     "sales": "sales data (revenue, units sold)",
@@ -8,11 +8,9 @@ DATA_TYPES = {
 }
 
 
-class DataAnalyzer:
+class DataAnalyzer(BaseFeature):
     """Feature 4: Analyzes business data with natural language queries."""
 
-    def __init__(self):
-        self.client = openai_client
 
     def get_inputs(self) -> dict:
         """Collect all required inputs interactively from the user."""
@@ -74,17 +72,7 @@ class DataAnalyzer:
             f"Query: {query}"
         )
 
-        messages = [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt},
-        ]
-
-        response = self.client.chat.completions.create(
-            model=DEFAULT_MODEL,
-            messages=messages,
-        )
-
-        return response.choices[0].message.content.strip()
+        return self._complete(system_prompt, user_prompt)
 
     # ------------------------------------------------------------------
     # Convenience wrappers for each supported data type
