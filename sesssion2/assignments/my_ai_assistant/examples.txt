@@ -1,0 +1,160 @@
+======================================================================
+  MY AI ASSISTANT — EXAMPLE INPUTS & OUTPUTS
+======================================================================
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SUB-COMPONENTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌─────────────────────────────────────────────────────────────────────
+│  1. EnhancedEmailWriter
+└─────────────────────────────────────────────────────────────────────
+INPUT:
+  "Write a friendly email to a client named Sarah, updating her on
+   the project status and next steps."
+
+OUTPUT:
+  🎯 Using: EMAIL
+  📧 Writing email...   Tone: friendly
+
+  Subject: Project Update and Next Steps
+
+  Hi Sarah,
+
+  I hope you're doing well! I wanted to touch base with you and
+  provide an update on the project we've been working on together.
+
+  I'm pleased to inform you that we have made significant progress
+  and are right on track with the timelines we discussed...
+
+  Warm regards,
+  [Your Name]
+
+──────────────────────────────────────────────────────────────────────
+
+┌─────────────────────────────────────────────────────────────────────
+│  2. SmartSummarizer
+└─────────────────────────────────────────────────────────────────────
+INPUT:
+  "Summarize the following text: Artificial intelligence is
+   transforming how businesses operate. Companies are using AI for
+   customer service, data analysis, and automation. Machine learning
+   models identify patterns in large datasets. Natural language
+   processing enables computers to understand human language. AI
+   adoption is accelerating across all industries and business sizes.
+   Challenges include data privacy, ethics, and finding skilled
+   professionals."
+
+OUTPUT:
+  🎯 Using: SUMMARIZE
+  📝 Summarizing (short style)...
+
+  ======================================================================
+  📊 SUMMARY ANALYSIS
+  ======================================================================
+  Original: 58 words, ~6 sentences
+  Summary:  39 words
+  Reduction: 32.8%
+  Style: Short
+
+  ----------------------------------------------------------------------
+  SUMMARY
+  ----------------------------------------------------------------------
+  Artificial intelligence is revolutionizing business operations through
+  applications like customer service, data analysis, and automation.
+  Despite widespread adoption, challenges such as data privacy, ethics,
+  and talent acquisition remain.
+  ----------------------------------------------------------------------
+
+──────────────────────────────────────────────────────────────────────
+
+┌─────────────────────────────────────────────────────────────────────
+│  3. DataAnalyzer
+└─────────────────────────────────────────────────────────────────────
+INPUT:
+  "Analyze 'assignments/my_ai_assistant/sales.json' and report the
+   revenue stats."
+
+OUTPUT:
+  🎯 Using: ANALYZE
+  📊 Analyzing data from 'sales.json' (field: revenue)...
+  🔧 Using file_reader...
+  🔧 Using analyze_data...
+
+  ======================================================================
+  📈 DATA ANALYSIS REPORT
+  ======================================================================
+  ### Sales Data Analysis Report
+
+  - Total Revenue:   $300,900.00
+  - Average Revenue:  $50,150.00
+  - Maximum Revenue:  $63,000.00
+  - Minimum Revenue:  $38,500.00
+
+  Insights:
+  • Average monthly revenue of $50,150 indicates consistent performance.
+  • Peak month reached $63,000 — 25.6% above average.
+  • Lowest month at $38,500 — 23.2% below average.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  TOOLS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌─────────────────────────────────────────────────────────────────────
+│  Calculator
+└─────────────────────────────────────────────────────────────────────
+INPUT:   "Calculate what is 15% of 250?"
+ROUTE:   🎯 TOOLS  →  🔧 calculate
+OUTPUT:  15% of 250 is 37.5.
+
+──────────────────────────────────────────────────────────────────────
+
+┌─────────────────────────────────────────────────────────────────────
+│  Data Stats
+└─────────────────────────────────────────────────────────────────────
+INPUT:   "Analyze the data [10, 20, 30, 40] to find the average."
+ROUTE:   🎯 TOOLS  →  🔧 analyze_data
+OUTPUT:  The average of the data [10, 20, 30, 40] is 25.
+
+──────────────────────────────────────────────────────────────────────
+
+┌─────────────────────────────────────────────────────────────────────
+│  Time Converter
+└─────────────────────────────────────────────────────────────────────
+INPUT:   "What is the current time in Tokyo?"
+ROUTE:   🎯 TOOLS  →  🔧 time_converter
+OUTPUT:  The current time in Tokyo (JST, UTC+9) is 10:45 AM.
+
+INPUT:   "Convert 3 PM EST to JST."
+ROUTE:   🎯 TOOLS  →  🔧 time_converter
+OUTPUT:  3:00 PM EST is 5:00 AM JST (next day).
+
+──────────────────────────────────────────────────────────────────────
+
+┌─────────────────────────────────────────────────────────────────────
+│  Unit Converter
+└─────────────────────────────────────────────────────────────────────
+INPUT:   "Convert 100 meters to feet."
+ROUTE:   🎯 TOOLS  →  🔧 unit_converter
+OUTPUT:  100 meters is equal to 328.084 feet.
+
+──────────────────────────────────────────────────────────────────────
+
+┌─────────────────────────────────────────────────────────────────────
+│  File Reader
+└─────────────────────────────────────────────────────────────────────
+INPUT:   "Read the contents of 'assignments/my_ai_assistant/sales.json'."
+ROUTE:   🎯 TOOLS  →  🔧 file_reader
+OUTPUT:  [{"month": "January", "revenue": 45000, "units_sold": 120}, ...]
+
+──────────────────────────────────────────────────────────────────────
+
+┌─────────────────────────────────────────────────────────────────────
+│  Web Search
+└─────────────────────────────────────────────────────────────────────
+INPUT:   "Search for the latest news on AI advancements."
+ROUTE:   🎯 TOOLS  →  🔧 web_search
+OUTPUT:  Latest AI advancements include improvements in multimodal
+         models, reasoning capabilities, and agentic frameworks...
+
+======================================================================
