@@ -51,6 +51,66 @@ class BusinessAssistant:
         """Feature 5: Client communication"""
         return self.communication_drafter.run()
 
-    def process_request(self, request):
-        """Main request handler - routes to right feature"""
-        pass
+    def process_request(self, request: str) -> bool:
+        """Route a single request string to the appropriate feature.
+
+        Returns False if the user wants to quit, True otherwise.
+        """
+        query = request.lower().strip()
+
+        # Quit intent
+        quit_keywords = {"quit", "exit", "bye", "goodbye", "stop", "q"}
+        if any(word in query.split() for word in quit_keywords) or query in quit_keywords:
+            print("\nGoodbye! Have a productive day!")
+            return False
+
+        # Email intent
+        if any(kw in query for kw in ("email", "write an email", "draft an email", "compose")):
+            self.write_email()
+
+        # Report intent
+        elif any(kw in query for kw in ("report", "investor", "generate report", "create report")):
+            self.generate_report()
+
+        # Meeting intent
+        elif any(kw in query for kw in ("meeting", "summarize", "action item", "minutes", "notes")):
+            self.summarize_meeting()
+
+        # Data analysis intent
+        elif any(kw in query for kw in ("analyze", "analysis", "data", "sales data", "financial data")):
+            self.analyze_business_data()
+
+        # Client communication intent
+        elif any(kw in query for kw in ("client", "communication", "draft", "proposal", "follow-up", "status update")):
+            self.draft_client_communication()
+
+        else:
+            print("\nSorry, I didn't understand that. Here's what I can do:")
+            self._print_capabilities()
+
+        return True
+
+    def _print_capabilities(self):
+        """Print the list of supported features."""
+        print("  1. Write / draft an email")
+        print("  2. Generate a report (sales, revenue, performance, quarterly)")
+        print("  3. Summarize a meeting and extract action items")
+        print("  4. Analyze business data (sales, financial, performance)")
+        print("  5. Draft client communications (proposals, follow-ups, etc.)")
+        print("\nType 'quit' at any time to exit.")
+
+    def run(self):
+        """Start the interactive assistant loop."""
+        print("\nWelcome to your Business Assistant!")
+        print("I'm here to help you tackle your business tasks. Here's what I can do:\n")
+        self._print_capabilities()
+
+        while True:
+            print()
+            request = input("How can I help you? > ").strip()
+            if not request:
+                continue
+            should_continue = self.process_request(request)
+            if not should_continue:
+                break
+            print("\nTask complete! What would you like to do next?")
