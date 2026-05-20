@@ -13,6 +13,8 @@ load_dotenv()
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+DEFAULT_MODEL = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
+
 if client.api_key:
     print("✅ API key loaded successfully!")
     print(f"Key starts with: {client.api_key[:8]}...")

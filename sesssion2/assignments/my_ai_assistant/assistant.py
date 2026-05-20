@@ -3,7 +3,7 @@ import re
 
 # Import the shared client from the assignments-level config.py.
 # This allows both assignments to share the same provider configuration.
-from ..config import client
+from ..config import client, DEFAULT_MODEL
 
 from .tools.calculator import calculate, calculator_tool
 from .tools.web_search import web_search, web_search_tool
@@ -15,21 +15,63 @@ from .tools.file_reader import file_reader, file_reader_tool
 
 class EnhancedEmailWriter:
     """
-    COMPLETE email writer that can research topics.
+    Enhanced email writer that can research topics before writing.
+    Supports formal, friendly, and casual tones.
+    Returns a complete email with subject line.
     """
-    
+
+    TONE_DESCRIPTIONS = {
+        "formal": "very formal and professional, using proper titles, structured paragraphs, and polite language suitable for business or official correspondence",
+        "friendly": "warm and friendly yet professional, using approachable language, a conversational style, and a positive tone",
+        "casual": "casual and relaxed, using informal language, contractions, and a conversational tone as if writing to a close colleague or friend",
+    }
+
+    # Maps natural-language aliases to a supported tone.
+    _TONE_ALIASES = {
+        "formal":       "formal",
+        "professional": "formal",
+        "official":     "formal",
+        "friendly":     "friendly",
+        "warm":         "friendly",
+        "casual":       "casual",
+        "informal":     "casual",
+        "relaxed":      "casual",
+    }
+
     def __init__(self):
         self.tools = [web_search_tool]
         self.functions = {"web_search": web_search}
+
+    def _extract_tone(self, text):
+        """Return the tone keyword found in the text, defaulting to 'formal'."""
+        text_lower = text.lower()
+        for keyword, tone in self._TONE_ALIASES.items():
+            if keyword in text_lower:
+                return tone
+        return "formal"
     
-    def write(self, description, tone="professional"):
+    def write(self, description, tone="formal"):
+        tone = tone.lower()
+        if tone not in self.TONE_DESCRIPTIONS:
+            supported = ", ".join(self.TONE_DESCRIPTIONS)
+            raise ValueError(f"Unsupported tone '{tone}'. Choose from: {supported}")
+
         print(f"\n📧 Writing email: {description}")
         print(f"   Tone: {tone}\n")
         
-        system_prompt = f"""You are a professional email writer.
-        Write in a {tone} tone.
-        If you need current information, use web_search.
-        Include subject, greeting, body, closing."""
+        tone_guidance = self.TONE_DESCRIPTIONS[tone]
+        system_prompt = f"""You are an expert email writer.
+        Write in a {tone} tone: {tone_guidance}.
+        If you need current information to write the email accurately, use web_search first.
+        Always return the complete email in this exact format:
+        Subject: <subject line>
+
+        <greeting>,
+
+        <body paragraphs>
+
+        <closing>,
+        <sender name placeholder>"""
         
         messages = [
             {"role": "system", "content": system_prompt},
@@ -38,7 +80,7 @@ class EnhancedEmailWriter:
         
         # First API call
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model=DEFAULT_MODEL,
             messages=messages,
             tools=self.tools
         )
@@ -65,7 +107,7 @@ class EnhancedEmailWriter:
             
             # Get final email with research
             final_response = client.chat.completions.create(
-                model="gpt-3.5-turbo",
+                model=DEFAULT_MODEL,
                 messages=messages
             )
             
@@ -95,7 +137,7 @@ class SmartSummarizer:
         
         # Get summary
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model=DEFAULT_MODEL,
             messages=[
                 {"role": "system", "content": f"Summarize as {styles.get(style, styles['short'])}"},
                 {"role": "user", "content": f"Summarize:\n{text}"}
@@ -122,13 +164,34 @@ class SmartSummarizer:
         print(summary)
         print("-" * 70)
 
-
+class DataAnalyzer:
+    """
+    COMPLETE data analyzer that can handle various data formats and provide insights.
+    """
+    
+    def analyze(self, data):
+        print(f"\n📊 Analyzing data...\n")
+        
+        # For simplicity, we just return basic stats here.
+        # In a real implementation, this could be much more complex.
+        if isinstance(data, list) and all(isinstance(x, (int, float)) for x in data):
+            count = len(data)
+            mean = sum(data) / count if count > 0 else 0
+            minimum = min(data) if count > 0 else None
+            maximum = max(data) if count > 0 else None
+            
+            analysis = f"Count: {count}\nMean: {mean:.2f}\nMin: {minimum}\nMax: {maximum}"
+            print(analysis)
+            return analysis
+        else:
+            print("Unsupported data format. Please provide a list of numbers.")
+            return "Unsupported data format."
 class MultiCapabilityAssistant:
     """
     COMPLETE multi-capability assistant.
     
     Features:
-    - Enhanced email writer (with research)
+    - Enhanced email writer (with research, supports formal/friendly/casual tones)
     - Smart summarizer (with analytics)
     - Calculator, web search, data analysis tools, time conversion, unit conversion, file reading
     
@@ -176,7 +239,8 @@ class MultiCapabilityAssistant:
         print(f"🎯 Using: {capability.upper()}\n")
         
         if capability == 'email':
-            return self.email_writer.write(request)
+            tone = self.email_writer._extract_tone(request)
+            return self.email_writer.write(request, tone=tone)
         elif capability == 'summarize':
             return "Please provide text to summarize."
         elif capability == 'tools':
@@ -189,7 +253,7 @@ class MultiCapabilityAssistant:
         messages = [{"role": "user", "content": query}]
         
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model=DEFAULT_MODEL,
             messages=messages,
             tools=self.tools
         )
@@ -207,7 +271,10 @@ class MultiCapabilityAssistant:
             
             print(f"🔧 Using {function_name}...")
             
-            result = self.functions[function_name](**function_args)
+            try:
+                result = self.functions[function_name](**function_args)
+            except Exception as e:
+                result = f"Search failed: {e}"
             
             messages.append({
                 "role": "tool",
@@ -216,7 +283,7 @@ class MultiCapabilityAssistant:
             })
         
         final_response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model=DEFAULT_MODEL,
             messages=messages
         )
         
@@ -225,7 +292,7 @@ class MultiCapabilityAssistant:
     def general_assistant(self, query):
         """General purpose assistant"""
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model=DEFAULT_MODEL,
             messages=[{"role": "user", "content": query}],
             tools=self.tools
         )
@@ -236,7 +303,7 @@ assistant = MultiCapabilityAssistant()
 
 tests = [
 ## sub-component tests
-#    "Write an email to announce new AI features to the team.",
+# "Write a friendly email to a client named Sarah, updating her on the project status and next steps.",
 #    "Summarize the following text: Artificial intelligence is transforming how businesses operate. Companies are using AI for customer service, data analysis, and automation. Machine learning models identify patterns in large datasets. Natural language processing enables computers to understand human language. AI adoption is accelerating across all industries and business sizes. Challenges include data privacy, ethics, and finding skilled professionals.",
 
 ## tools tests
