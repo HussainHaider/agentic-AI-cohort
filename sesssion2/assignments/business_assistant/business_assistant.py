@@ -3,6 +3,12 @@ from .tools.web_search import web_search_tool, web_search
 from .tools.data_analyzer import data_analyzer_tool, analyze_data
 from .tools.report_formatter import report_formatter_tool, format_report
 
+from .features.client_communication_drafter import ClientCommunicationDrafter
+from .features.data_analyzer import DataAnalyzer
+from .features.meeting_summarizer import MeetingSummarizer
+from .features.report_generator import ReportGenerator
+from .features.smart_email_writer import SmartEmailWriter
+
 
 class BusinessAssistant:
     """Main business assistant class"""
@@ -19,25 +25,31 @@ class BusinessAssistant:
             "format_report": format_report,
         }
 
-    def write_email(self, purpose, recipient, tone, research_topic=None):
+        self.communication_drafter = ClientCommunicationDrafter()
+        self.data_analyzer = DataAnalyzer()
+        self.meeting_summarizer = MeetingSummarizer()
+        self.report_generator = ReportGenerator()
+        self.email_writer = SmartEmailWriter()
+
+    def write_email(self):
         """Feature 1: Email writer"""
-        pass
+        return self.email_writer.run()
 
-    def generate_report(self, report_type, data, period):
+    def generate_report(self):
         """Feature 2: Report generator"""
-        pass
+        return self.report_generator.run()
 
-    def summarize_meeting(self, notes, date, attendees=None):
+    def summarize_meeting(self):
         """Feature 3: Meeting summarizer"""
-        pass
+        return self.meeting_summarizer.run()
 
-    def analyze_business_data(self, query, data):
+    def analyze_business_data(self):
         """Feature 4: Data analyzer"""
-        pass
+        return self.data_analyzer.run()
 
-    def draft_client_communication(self, comm_type, client, context, tone):
+    def draft_client_communication(self):
         """Feature 5: Client communication"""
-        pass
+        return self.communication_drafter.run()
 
     def process_request(self, request):
         """Main request handler - routes to right feature"""
