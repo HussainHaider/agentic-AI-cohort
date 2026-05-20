@@ -1,147 +1,160 @@
-** Sub-components **
+======================================================================
+  MY AI ASSISTANT — EXAMPLE INPUTS & OUTPUTS
+======================================================================
 
-1. EnhancedEmailWriter
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  SUB-COMPONENTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-"Write a friendly email to a client named Sarah, updating her on the project status and next steps.",
+┌─────────────────────────────────────────────────────────────────────
+│  1. EnhancedEmailWriter
+└─────────────────────────────────────────────────────────────────────
+INPUT:
+  "Write a friendly email to a client named Sarah, updating her on
+   the project status and next steps."
 
-Using: EMAIL
+OUTPUT:
+  🎯 Using: EMAIL
+  📧 Writing email...   Tone: friendly
 
+  Subject: Project Update and Next Steps
 
-📧 Writing email: Write a friendly email to a client named Sarah, updating her on the project status and next steps.
-   Tone: friendly
+  Hi Sarah,
 
+  I hope you're doing well! I wanted to touch base with you and
+  provide an update on the project we've been working on together.
 
-💬 Response:
-Subject: Project Update and Next Steps
+  I'm pleased to inform you that we have made significant progress
+  and are right on track with the timelines we discussed...
 
-Hi Sarah,
+  Warm regards,
+  [Your Name]
 
-I hope you're doing well! I wanted to touch base with you and provide an update on the project we've been working on together.
+──────────────────────────────────────────────────────────────────────
 
-I'm pleased to inform you that we have made significant progress and are right on track with the timelines we discussed. The team has been working diligently to ensure the project's success, and I am confident that we are moving in the right direction.
+┌─────────────────────────────────────────────────────────────────────
+│  2. SmartSummarizer
+└─────────────────────────────────────────────────────────────────────
+INPUT:
+  "Summarize the following text: Artificial intelligence is
+   transforming how businesses operate. Companies are using AI for
+   customer service, data analysis, and automation. Machine learning
+   models identify patterns in large datasets. Natural language
+   processing enables computers to understand human language. AI
+   adoption is accelerating across all industries and business sizes.
+   Challenges include data privacy, ethics, and finding skilled
+   professionals."
 
-In the next phase of the project, we will be focusing on refining the details and putting the final touches to deliver a high-quality outcome that exceeds your expectations. I will keep you updated every step of the way to ensure transparency and alignment with your vision.
+OUTPUT:
+  🎯 Using: SUMMARIZE
+  📝 Summarizing (short style)...
 
-If you have any questions, feedback, or specific preferences you'd like us to consider, please feel free to reach out. Your input is invaluable to us, and we want to make sure that the final result aligns perfectly with your goals.
+  ======================================================================
+  📊 SUMMARY ANALYSIS
+  ======================================================================
+  Original: 58 words, ~6 sentences
+  Summary:  39 words
+  Reduction: 32.8%
+  Style: Short
 
-Thank you for your collaboration and trust in our team. I am excited about the progress we've made so far and look forward to the successful completion of the project.
+  ----------------------------------------------------------------------
+  SUMMARY
+  ----------------------------------------------------------------------
+  Artificial intelligence is revolutionizing business operations through
+  applications like customer service, data analysis, and automation.
+  Despite widespread adoption, challenges such as data privacy, ethics,
+  and talent acquisition remain.
+  ----------------------------------------------------------------------
 
-Warm regards,
+──────────────────────────────────────────────────────────────────────
 
-[Your Name]
+┌─────────────────────────────────────────────────────────────────────
+│  3. DataAnalyzer
+└─────────────────────────────────────────────────────────────────────
+INPUT:
+  "Analyze 'assignments/my_ai_assistant/sales.json' and report the
+   revenue stats."
 
--------------------------------------------------------------------
+OUTPUT:
+  🎯 Using: ANALYZE
+  📊 Analyzing data from 'sales.json' (field: revenue)...
+  🔧 Using file_reader...
+  🔧 Using analyze_data...
 
-2. SmartSummarizer
+  ======================================================================
+  📈 DATA ANALYSIS REPORT
+  ======================================================================
+  ### Sales Data Analysis Report
 
-"Summarize the following text: Artificial intelligence is transforming how businesses operate. Companies are using AI for customer service, data analysis, and automation. Machine learning models identify patterns in large datasets. Natural language processing enables computers to understand human language. AI adoption is accelerating across all industries and business sizes. Challenges include data privacy, ethics, and finding skilled professionals.",
+  - Total Revenue:   $300,900.00
+  - Average Revenue:  $50,150.00
+  - Maximum Revenue:  $63,000.00
+  - Minimum Revenue:  $38,500.00
 
-📝 Summarizing (short style)...
+  Insights:
+  • Average monthly revenue of $50,150 indicates consistent performance.
+  • Peak month reached $63,000 — 25.6% above average.
+  • Lowest month at $38,500 — 23.2% below average.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  TOOLS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌─────────────────────────────────────────────────────────────────────
+│  Calculator
+└─────────────────────────────────────────────────────────────────────
+INPUT:   "Calculate what is 15% of 250?"
+ROUTE:   🎯 TOOLS  →  🔧 calculate
+OUTPUT:  15% of 250 is 37.5.
+
+──────────────────────────────────────────────────────────────────────
+
+┌─────────────────────────────────────────────────────────────────────
+│  Data Stats
+└─────────────────────────────────────────────────────────────────────
+INPUT:   "Analyze the data [10, 20, 30, 40] to find the average."
+ROUTE:   🎯 TOOLS  →  🔧 analyze_data
+OUTPUT:  The average of the data [10, 20, 30, 40] is 25.
+
+──────────────────────────────────────────────────────────────────────
+
+┌─────────────────────────────────────────────────────────────────────
+│  Time Converter
+└─────────────────────────────────────────────────────────────────────
+INPUT:   "What is the current time in Tokyo?"
+ROUTE:   🎯 TOOLS  →  🔧 time_converter
+OUTPUT:  The current time in Tokyo (JST, UTC+9) is 10:45 AM.
+
+INPUT:   "Convert 3 PM EST to JST."
+ROUTE:   🎯 TOOLS  →  🔧 time_converter
+OUTPUT:  3:00 PM EST is 5:00 AM JST (next day).
+
+──────────────────────────────────────────────────────────────────────
+
+┌─────────────────────────────────────────────────────────────────────
+│  Unit Converter
+└─────────────────────────────────────────────────────────────────────
+INPUT:   "Convert 100 meters to feet."
+ROUTE:   🎯 TOOLS  →  🔧 unit_converter
+OUTPUT:  100 meters is equal to 328.084 feet.
+
+──────────────────────────────────────────────────────────────────────
+
+┌─────────────────────────────────────────────────────────────────────
+│  File Reader
+└─────────────────────────────────────────────────────────────────────
+INPUT:   "Read the contents of 'assignments/my_ai_assistant/sales.json'."
+ROUTE:   🎯 TOOLS  →  🔧 file_reader
+OUTPUT:  [{"month": "January", "revenue": 45000, "units_sold": 120}, ...]
+
+──────────────────────────────────────────────────────────────────────
+
+┌─────────────────────────────────────────────────────────────────────
+│  Web Search
+└─────────────────────────────────────────────────────────────────────
+INPUT:   "Search for the latest news on AI advancements."
+ROUTE:   🎯 TOOLS  →  🔧 web_search
+OUTPUT:  Latest AI advancements include improvements in multimodal
+         models, reasoning capabilities, and agentic frameworks...
 
 ======================================================================
-📊 SUMMARY ANALYSIS
-======================================================================
-Original: 58 words, ~6 sentences
-Summary: 39 words
-Reduction: 32.8%
-Style: Short
-
-----------------------------------------------------------------------
-SUMMARY
-----------------------------------------------------------------------
-Artificial intelligence is revolutionizing business operations through applications like customer service, data analysis, and automation, with machine learning and natural language processing playing key roles. Despite its widespread adoption, challenges such as data privacy, ethics, and talent acquisition remain.
-----------------------------------------------------------------------
-
-
-3. DataAnalyzer
-
-"Analyze 'assignments/my_ai_assistant/sales.json' and report the revenue stats.",
-
-💬 Response:
-### Sales Data Analysis Report
-
-- Total Revenue: $300,900.00
-- Average Revenue: $50,150.00
-- Maximum Revenue: $63,000.00
-- Minimum Revenue: $38,500.00
-
-#### Insights:
-- The total revenue generated from the sales data is $300,900.00.
-- The average monthly revenue is $50,150.00, indicating a consistent performance across the months.
-- The highest revenue recorded was $63,000.00 in a single month, showcasing a peak in sales.
-- The lowest revenue observed was $38,500.00, indicating the least performing month in terms of revenue.
-
-
-** Tools **
-
-"Calculate what is 15% of 250?",
-
-🎯 Using: TOOLS
-
-🔧 Using calculate...
-
-💬 Response:
-15% of 250 is 37.5.
-
--------------------------------------------------------------------
-
-"Analyze the data [10, 20, 30, 40] to find the average.",
-
-🎯 Using: TOOLS
-
-🔧 Using analyze_data...
-
-💬 Response:
-The average of the data [10, 20, 30, 40] is 25.
-
--------------------------------------------------------------------
-
-"What is the current time in Tokyo?"
-
-Using time_converter...
-
-💬 Response:
-The current time in Tokyo is 11:31 AM on May 20, 2026.
-
--------------------------------------------------------------------
-
-"Convert 100 meters to feet."
-
-🎯 Using: TOOLS
-
-🔧 Using unit_converter...
-
-💬 Response:
-100 meters is equal to 328.084 feet.
-
--------------------------------------------------------------------
-
-"Read the contents of 'assignments/my_ai_assistant/sales.json'."
-
-Using: TOOLS
-
-🔧 Using file_reader...
-
-🔄 Getting final response with tool results...
-
-
-💬 Response:
-The contents of 'sales.json' are as follows:
-
-- January: Revenue - $42,000, Units Sold - 320, Region - North, Profit - $12,000
-- February: Revenue - $38,500, Units Sold - 290, Region - South, Profit - $9,800
-- March: Revenue - $51,200, Units Sold - 410, Region - East, Profit - $15,600
-- April: Revenue - $47,800, Units Sold - 375, Region - West, Profit - $13,200
-- May: Revenue - $63,000, Units Sold - 520, Region - North, Profit - $21,000
-- June: Revenue - $58,400, Units Sold - 480, Region - South, Profit - $18,900
-
--------------------------------------------------------------------
-
-"Search for the latest news on AI advancements.",
-
-🎯 Using: TOOLS
-
-🔧 Using web_search...
-
-💬 Response:
-I was unable to find specific information on the latest news on AI advancements. I recommend checking reputable news sources such as TechCrunch, Wired, or The Verge for the most up-to-date information on AI advancements.

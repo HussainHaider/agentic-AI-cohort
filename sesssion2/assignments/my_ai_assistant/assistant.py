@@ -43,8 +43,21 @@ class MultiCapabilityAssistant:
         self.summarizer = SmartSummarizer()
         self.data_analyzer = DataAnalyzer()
         
-        print("✅ Multi-Capability Assistant initialized!")
-        print("   Capabilities: Chat, Email, Summarize, Calculate, Search, Analyze\n")
+        print("\n" + "=" * 70)
+        print("🤖  MULTI-CAPABILITY AI ASSISTANT")
+        print("=" * 70)
+        print("  Capabilities:")
+        print("    📧  Email Writer    — formal / friendly / casual tones")
+        print("    📝  Summarizer      — short / medium / detailed styles")
+        print("    📊  Data Analyzer   — reads files, computes stats")
+        print("    🔢  Calculator      — evaluates math expressions")
+        print("    🔍  Web Search      — researches topics")
+        print("    🕐  Time Converter  — converts across timezones")
+        print("    📏  Unit Converter  — length, weight, temperature & more")
+        print("    📂  File Reader     — reads file contents")
+        print("=" * 70)
+        print("  Ready! Type any request and it will be routed automatically.")
+        print("=" * 70 + "\n")
     
     def route_request(self, request):
         """Decide which capability to use"""
