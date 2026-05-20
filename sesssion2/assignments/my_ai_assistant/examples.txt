@@ -35,6 +35,22 @@ Warm regards,
 2. SmartSummarizer
 3. DataAnalyzer
 
+"Analyze 'assignments/my_ai_assistant/sales.json' and report the revenue stats.",
+
+💬 Response:
+### Sales Data Analysis Report
+
+- Total Revenue: $300,900.00
+- Average Revenue: $50,150.00
+- Maximum Revenue: $63,000.00
+- Minimum Revenue: $38,500.00
+
+#### Insights:
+- The total revenue generated from the sales data is $300,900.00.
+- The average monthly revenue is $50,150.00, indicating a consistent performance across the months.
+- The highest revenue recorded was $63,000.00 in a single month, showcasing a peak in sales.
+- The lowest revenue observed was $38,500.00, indicating the least performing month in terms of revenue.
+
 
 ** Tools **
 

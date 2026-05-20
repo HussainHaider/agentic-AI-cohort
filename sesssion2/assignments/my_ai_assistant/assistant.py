@@ -166,26 +166,91 @@ class SmartSummarizer:
 
 class DataAnalyzer:
     """
-    COMPLETE data analyzer that can handle various data formats and provide insights.
+    Data analyzer that reads a JSON file, extracts numeric fields,
+    uses analyze_data tool for sum/average/max/min, then returns
+    LLM-formatted insights.
     """
-    
-    def analyze(self, data):
-        print(f"\n📊 Analyzing data...\n")
+
+    _FIELD_ALIASES = {
+        "revenue":    "revenue",
+        "sales":      "revenue",
+        "income":     "revenue",
+        "profit":     "profit",
+        "earnings":   "profit",
+        "units":      "units_sold",
+        "units_sold": "units_sold",
+        "sold":       "units_sold",
+    }
+
+    def __init__(self):
+        self.tools = [file_reader_tool, data_analyzer_tool]
+        self.functions = {
+            "file_reader": file_reader,
+            "analyze_data": analyze_data,
+        }
+
+    def _extract_numeric_field(self, text: str) -> str:
+        """Return the numeric field name found in the text, defaulting to 'revenue'."""
+        text_lower = text.lower()
+        for keyword, field in self._FIELD_ALIASES.items():
+            if keyword in text_lower:
+                return field
+        return "revenue"
+
+    def analyze(self, file_path: str, numeric_field: str = "revenue"):
+        print(f"\n📊 Analyzing data from '{file_path}' (field: {numeric_field})...\n")
+
+        messages = [
+            {
+                "role": "system",
+                "content": (
+                    "You are a data analyst. Use the tools to: "
+                    "1) read the file, 2) extract the numeric field values and run "
+                    "sum, average, max, and min on them using analyze_data. "
+                    "Then provide a clear, well-formatted report with insights."
+                ),
+            },
+            {
+                "role": "user",
+                "content": (
+                    f"Read '{file_path}', extract the '{numeric_field}' values, "
+                    f"and compute sum, average, max, and min. Then give me a formatted report."
+                ),
+            },
+        ]
+
+        while True:
+            response = client.chat.completions.create(
+                model=DEFAULT_MODEL,
+                messages=messages,
+                tools=self.tools,
+            )
+
+            response_message = response.choices[0].message
+            messages.append(response_message)
+
+            if response_message.tool_calls:
+                for tool_call in response_message.tool_calls:
+                    function_name = tool_call.function.name
+                    function_args = json.loads(tool_call.function.arguments)
+
+                    print(f"🔧 Using {function_name}...")
+
+                    result = self.functions[function_name](**function_args)
+
+                    messages.append({
+                        "role": "tool",
+                        "tool_call_id": tool_call.id,
+                        "content": result,
+                    })
+            else:
+                report = response_message.content
+                print("\n" + "=" * 70)
+                print("📈 DATA ANALYSIS REPORT")
+                print("=" * 70)
+                return report
         
-        # For simplicity, we just return basic stats here.
-        # In a real implementation, this could be much more complex.
-        if isinstance(data, list) and all(isinstance(x, (int, float)) for x in data):
-            count = len(data)
-            mean = sum(data) / count if count > 0 else 0
-            minimum = min(data) if count > 0 else None
-            maximum = max(data) if count > 0 else None
-            
-            analysis = f"Count: {count}\nMean: {mean:.2f}\nMin: {minimum}\nMax: {maximum}"
-            print(analysis)
-            return analysis
-        else:
-            print("Unsupported data format. Please provide a list of numbers.")
-            return "Unsupported data format."
+
 class MultiCapabilityAssistant:
     """
     COMPLETE multi-capability assistant.
@@ -212,6 +277,7 @@ class MultiCapabilityAssistant:
         # Sub-components
         self.email_writer = EnhancedEmailWriter()
         self.summarizer = SmartSummarizer()
+        self.data_analyzer = DataAnalyzer()
         
         print("✅ Multi-Capability Assistant initialized!")
         print("   Capabilities: Chat, Email, Summarize, Calculate, Search, Analyze\n")
@@ -224,6 +290,8 @@ class MultiCapabilityAssistant:
             return 'email'
         elif any(word in request_lower for word in ['summarize', 'summary']):
             return 'summarize'
+        elif any(word in request_lower for word in ['analyze', 'analyse']) and re.search(r'\.(json|csv|txt)', request_lower):
+            return 'analyze'
         elif any(word in request_lower for word in ['calculate', 'math', 'average', 'sum', 'convert', 'time in', 'search']) or re.search(r'read\s+(the\s+)?(file|content|contents)', request_lower):
             return 'tools'
         else:
@@ -243,6 +311,11 @@ class MultiCapabilityAssistant:
             return self.email_writer.write(request, tone=tone)
         elif capability == 'summarize':
             return "Please provide text to summarize."
+        elif capability == 'analyze':
+            path_match = re.search(r"['\"]([^'\"]+\.(json|csv|txt))['\"]|(\S+\.(json|csv|txt))", request)
+            file_path = path_match.group(1) or path_match.group(3) if path_match else "assignments/my_ai_assistant/sales.json"
+            field = self.data_analyzer._extract_numeric_field(request)
+            return self.data_analyzer.analyze(file_path, numeric_field=field)
         elif capability == 'tools':
             return self.use_tools(request)
         else:
@@ -305,6 +378,7 @@ tests = [
 ## sub-component tests
 # "Write a friendly email to a client named Sarah, updating her on the project status and next steps.",
 #    "Summarize the following text: Artificial intelligence is transforming how businesses operate. Companies are using AI for customer service, data analysis, and automation. Machine learning models identify patterns in large datasets. Natural language processing enables computers to understand human language. AI adoption is accelerating across all industries and business sizes. Challenges include data privacy, ethics, and finding skilled professionals.",
+"Analyze 'assignments/my_ai_assistant/sales.json' and report the revenue stats.",
 
 ## tools tests
 #    "Calculate what is 15% of 250?",
@@ -313,7 +387,11 @@ tests = [
 #    "Convert 3 PM EST to JST.",
 #    "What is the current time in Tokyo?",
 #    "Convert 100 meters to feet.",
-#    "Read the contents of 'assignments/my_ai_assistant/sales.json'."
+#    "Read the contents of 'assignments/my_ai_assistant/sales.json'.",
+
+## DataAnalyzer tests
+   "Analyze 'assignments/my_ai_assistant/sales.json' and report the revenue stats.",
+#    "Analyze 'assignments/my_ai_assistant/sales.json' field: profit",
 ]
 
 for test in tests:
