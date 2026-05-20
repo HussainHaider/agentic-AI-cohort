@@ -1,0 +1,145 @@
+================================================================================
+SMART EMAIL WRITER — USAGE EXAMPLES
+================================================================================
+Feature: write_email()  /  SmartEmailWriter.write()
+
+Scenario: Sarah runs a small tech company called NovaTech Solutions.
+She needs to communicate with clients, investors, and her team regularly.
+================================================================================
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 1 — Stakeholder update email (professional tone)
+────────────────────────────────────────────────────────────────────────────────
+Input:
+  purpose   : "Announce Q1 2026 results and outline Q2 growth strategy"
+  recipient : "stakeholder"
+  tone      : "professional"
+
+Expected output format:
+  Subject: NovaTech Solutions Q1 2026 Results & Q2 Strategy Overview
+
+  Dear Valued Stakeholders,
+
+  I am pleased to share NovaTech Solutions' Q1 2026 performance highlights.
+  This quarter we achieved record revenue of $240,000, representing a 15%
+  growth over Q4 2025, driven by strong demand in our cloud services division.
+
+  Looking ahead to Q2 2026, we are investing in three strategic areas:
+  expanding our enterprise client base, launching a self-service dashboard,
+  and hiring two senior engineers to accelerate product delivery.
+
+  We remain committed to transparency and will host a stakeholder call on
+  June 5, 2026, to walk through the numbers and answer your questions.
+
+  Thank you for your continued trust and support.
+
+  Warm regards,
+  Sarah Mitchell
+  CEO, NovaTech Solutions
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 2 — Client onboarding email (friendly tone)
+────────────────────────────────────────────────────────────────────────────────
+Input:
+  purpose   : "Welcome new client and outline onboarding steps"
+  recipient : "client"
+  tone      : "friendly"
+
+Expected output format:
+  Subject: Welcome to NovaTech Solutions — Let's Get You Started!
+
+  Dear [Client Name],
+
+  Welcome aboard! We are thrilled to have you as part of the NovaTech family.
+  Our team is ready to make your onboarding experience as smooth as possible.
+
+  Over the next two weeks, here is what you can expect:
+    • Day 1–3:  Account setup and system access provisioning
+    • Day 4–7:  Kickoff call with your dedicated account manager
+    • Day 8–14: Training sessions and workflow configuration
+
+  Your primary point of contact is James Lee (james@novatech.io), who will
+  reach out within 24 hours to schedule your kickoff call.
+
+  We are excited to get started — please don't hesitate to reply with any
+  questions!
+
+  Best,
+  Sarah Mitchell
+  CEO, NovaTech Solutions
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 3 — Team motivation email (professional tone, no research)
+────────────────────────────────────────────────────────────────────────────────
+Input:
+  purpose        : "Celebrate hitting $1M ARR milestone and motivate team"
+  recipient      : "team"
+  tone           : "professional"
+  research_topic : (none)
+
+Expected output format:
+  Subject: We Did It — $1M ARR! Thank You, Team.
+
+  Dear NovaTech Team,
+
+  I am incredibly proud to announce that NovaTech Solutions has officially
+  crossed the $1,000,000 ARR milestone — a achievement that would not have
+  been possible without each and every one of you.
+
+  ...
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 4 — Supplier negotiation email (formal tone, with research)
+────────────────────────────────────────────────────────────────────────────────
+Input:
+  purpose        : "Request 10% discount on annual software license renewal"
+  recipient      : "supplier"
+  tone           : "formal"
+  research_topic : "current market pricing for enterprise cloud software licenses"
+
+Note: The assistant will call web_search first to gather market pricing data,
+      then incorporate those findings into the email body to strengthen the
+      negotiation position.
+
+Expected output format:
+  Subject: Annual License Renewal Discussion — NovaTech Solutions
+
+  Dear [Supplier Contact],
+
+  I am writing on behalf of NovaTech Solutions regarding the upcoming renewal
+  of our enterprise license agreement (Contract #ENT-2024-089), due on
+  July 1, 2026.
+
+  Based on current market benchmarks, comparable solutions are being offered
+  at rates approximately 10–15% below our existing contract price. Given our
+  three-year partnership and consistent on-time payments, we would like to
+  discuss aligning our renewal terms with these market rates.
+
+  ...
+
+
+================================================================================
+QUICK REFERENCE — API CALL
+================================================================================
+
+  from business_assistant.features.smart_email_writer import SmartEmailWriter
+
+  writer = SmartEmailWriter()
+
+  # Direct API call (no interactive prompts)
+  email = writer.write(
+      purpose="announce new product feature",
+      recipient="client",
+      tone="professional",
+      research_topic=None   # optional: pass a topic to trigger web search
+  )
+  print(email)
+
+  # Interactive (prompts user for all inputs)
+  writer.run()
+
+================================================================================

@@ -1,0 +1,148 @@
+================================================================================
+DATA ANALYZER — USAGE EXAMPLES
+================================================================================
+Feature: analyze_business_data()  /  DataAnalyzer.analyze()
+
+Scenario: Sarah needs quick, natural-language insights from raw business
+numbers — no spreadsheets, no formulas, just plain-English answers.
+================================================================================
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 1 — Monthly Sales Analysis
+────────────────────────────────────────────────────────────────────────────────
+Input:
+  data_type : "sales"
+  data      : "Jan:50000, Feb:65000, Mar:72000, Apr:68000, May:80000"
+  query     : "What is the average monthly revenue and overall growth rate?"
+
+Expected output:
+  ANALYSIS RESULTS
+  ==================
+  Total Revenue (Jan–May):    $335,000
+  Monthly Average Revenue:    $67,000
+  Lowest Month:               January  ($50,000)
+  Highest Month:              May      ($80,000)
+  Overall Growth (Jan→May):   +60%
+  Month-over-Month Changes:
+    Jan→Feb:  +30%
+    Feb→Mar:  +10.8%
+    Mar→Apr:  -5.6%
+    Apr→May:  +17.6%
+
+  INTERPRETATION
+  Revenue has grown 60% over five months, averaging $67,000/month. The dip in
+  April is the only month with negative growth but recovered strongly in May,
+  suggesting a seasonal blip rather than a structural issue.
+
+  RECOMMENDATION
+  1. Investigate April's dip — it may indicate a recurring seasonal pattern
+     worth addressing with a targeted promotion.
+  2. Maintain May's momentum by launching a Q2 enterprise deal push.
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 2 — Financial Data (expenses vs. revenue)
+────────────────────────────────────────────────────────────────────────────────
+Input:
+  data_type : "financial"
+  data      : "revenue:240000, salaries:95000, hosting:12000, marketing:30000, misc:8000"
+  query     : "What is our net profit margin and largest expense category?"
+
+Expected output:
+  ANALYSIS RESULTS
+  ==================
+  Total Revenue:           $240,000
+  Total Expenses:          $145,000
+  Net Profit:              $95,000
+  Net Profit Margin:       39.6%
+  Largest Expense:         Salaries ($95,000 — 65.5% of expenses)
+  Marketing Spend Ratio:   12.5% of revenue
+
+  INTERPRETATION
+  A 39.6% net profit margin is healthy for a SaaS company at this stage.
+  Salaries dominate the cost base at 65.5% of total expenses, which is typical
+  for a people-driven tech business.
+
+  RECOMMENDATION
+  1. Marketing spend at 12.5% of revenue is slightly low for a growth-stage
+     company — consider increasing to 15–18% to accelerate customer acquisition.
+  2. Review miscellaneous expenses quarterly to identify optimisation opportunities.
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 3 — Performance Metrics
+────────────────────────────────────────────────────────────────────────────────
+Input:
+  data_type : "performance"
+  data      : "conversion_rate:12, churn_rate:3, nps:72, cac:850, ltv:4200"
+  query     : "How healthy are our core SaaS metrics?"
+
+Expected output:
+  ANALYSIS RESULTS
+  ==================
+  Conversion Rate:    12%   (industry benchmark: 5–8%)   ✓ Above average
+  Churn Rate:         3%    (target: <5%)                 ✓ Healthy
+  NPS Score:          72    (benchmark: >50 = excellent)  ✓ Excellent
+  CAC:                $850
+  LTV:                $4,200
+  LTV:CAC Ratio:      4.9:1 (ideal: >3:1)                ✓ Strong
+
+  INTERPRETATION
+  All core SaaS metrics are in strong territory. The LTV:CAC ratio of 4.9:1
+  means every $1 spent on acquisition returns $4.90 in lifetime value — well
+  above the 3:1 threshold considered healthy.
+
+  RECOMMENDATION
+  1. With a healthy LTV:CAC ratio, increase customer acquisition spend.
+  2. Monitor churn proactively — even at 3%, reducing it to 2% would
+     significantly increase LTV over time.
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 4 — Time-Series Analysis
+────────────────────────────────────────────────────────────────────────────────
+Input:
+  data_type : "time-series"
+  data      : "2023-Q1:120000, 2023-Q2:145000, 2023-Q3:138000, 2023-Q4:162000,
+               2024-Q1:175000, 2024-Q2:198000, 2024-Q3:210000, 2024-Q4:231000"
+  query     : "Show year-over-year growth and identify the trend."
+
+Expected output:
+  ANALYSIS RESULTS
+  ==================
+  FY 2023 Total:          $565,000
+  FY 2024 Total:          $814,000
+  YoY Growth:             +44.1%
+  CAGR (2023→2024):       +44.1% (single-year)
+  Best Quarter:           Q4 2024 ($231,000)
+  Consistent QoQ growth in 2024:  Yes (all quarters positive)
+  ...
+
+
+================================================================================
+QUICK REFERENCE — API CALL
+================================================================================
+
+  from business_assistant.features.data_analyzer import DataAnalyzer
+
+  analyzer = DataAnalyzer()
+
+  # Direct API call
+  result = analyzer.analyze(
+      data_type="sales",
+      data="Jan:50000, Feb:65000, Mar:72000",
+      query="What is the average monthly revenue and growth rate?"
+  )
+  print(result)
+
+  # Convenience wrappers
+  analyzer.analyze_sales(data, query)
+  analyzer.analyze_financial(data, query)
+  analyzer.analyze_performance(data, query)
+  analyzer.analyze_timeseries(data, query)
+
+  # Interactive (prompts user for all inputs)
+  analyzer.run()
+
+================================================================================

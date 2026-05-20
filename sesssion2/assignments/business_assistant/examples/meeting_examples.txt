@@ -1,0 +1,146 @@
+================================================================================
+MEETING SUMMARIZER — USAGE EXAMPLES
+================================================================================
+Feature: summarize_meeting()  /  MeetingSummarizer.summarize()
+
+Scenario: Sarah's weekly leadership meeting produces raw, unstructured notes.
+The assistant transforms them into clean, shareable summaries.
+================================================================================
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 1 — Weekly Leadership Meeting
+────────────────────────────────────────────────────────────────────────────────
+Input:
+  notes:
+    "talked about q1 results, we hit 187k which is good, 15% above last quarter.
+     sarah wants to push for enterprise clients more in q2.
+     james said crm is outdated, needs upgrade by end of may.
+     maria raised concern about customer churn going up slightly - from 2% to 3%.
+     decided to do a customer success survey next week.
+     john will prepare the investor deck for june board meeting.
+     sarah to interview 2 senior eng candidates this week.
+     next meeting june 1."
+
+  date      : "May 15, 2026"
+  attendees : "Sarah Mitchell, James Lee, Maria Gomez, John Park"
+
+Expected output:
+  ===========================================
+  MEETING SUMMARY
+  ===========================================
+  Date: May 15, 2026
+  Attendees: Sarah Mitchell, James Lee, Maria Gomez, John Park
+
+  SUMMARY
+  The leadership team reviewed Q1 2026 results (revenue $187K, +15% QoQ) and
+  aligned on Q2 priorities. Key topics included CRM infrastructure, a small
+  uptick in customer churn, and preparation for the June board meeting.
+
+  KEY POINTS
+  • Q1 revenue: $187,000 — 15% above Q4 2025
+  • Q2 focus: accelerate enterprise client acquisition
+  • CRM system upgrade required by end of May
+  • Customer churn increased from 2% → 3%; customer success survey planned
+  • June board meeting preparation underway
+
+  DECISIONS
+  1. Launch customer success survey next week to address churn uptick.
+  2. Prioritise enterprise pipeline in Q2 go-to-market strategy.
+
+  ACTION ITEMS
+  • James: Upgrade CRM system by May 31, 2026
+  • John: Prepare investor deck for June board meeting
+  • Sarah: Interview two senior engineering candidates this week
+  • Maria: Design and distribute customer success survey
+
+  NEXT MEETING: June 1, 2026
+  ===========================================
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 2 — Product Planning Session (no attendees specified)
+────────────────────────────────────────────────────────────────────────────────
+Input:
+  notes:
+    "reviewed user feedback from last release. main complaints: slow dashboard
+     load time and missing export to PDF feature. engineering estimates 2 weeks
+     for PDF export, 1 sprint for performance fix. decided to prioritise perf fix
+     in next sprint. pdf export goes into sprint after. design to create mockups
+     for new analytics page by friday. no new features until existing backlog cleared."
+
+  date      : "May 12, 2026"
+  attendees : (none provided)
+
+Expected output:
+  ===========================================
+  MEETING SUMMARY
+  ===========================================
+  Date: May 12, 2026
+  Attendees: Not specified
+
+  SUMMARY
+  The product planning session focused on addressing user-reported issues from
+  the last release. The team prioritised a performance fix ahead of the new
+  PDF export feature and agreed to pause new feature development until the
+  existing backlog is cleared.
+
+  KEY POINTS
+  • User feedback: slow dashboard load times and missing PDF export
+  • Engineering estimate: 1 sprint for performance fix, 2 weeks for PDF export
+  • New feature development paused until backlog is cleared
+
+  DECISIONS
+  1. Performance fix scheduled for the upcoming sprint.
+  2. PDF export feature deferred to the following sprint.
+  3. No new features until existing backlog is resolved.
+
+  ACTION ITEMS
+  • Design team: Create mockups for new analytics page by Friday
+  • Engineering: Begin performance optimisation in next sprint
+
+  NEXT MEETING: Not scheduled
+  ===========================================
+
+
+────────────────────────────────────────────────────────────────────────────────
+HOW TO ENTER MULTI-LINE NOTES (interactive mode)
+────────────────────────────────────────────────────────────────────────────────
+When using run() interactively, type your notes line by line and type END
+on a new line when finished:
+
+  Enter your meeting notes below.
+  When done, type 'END' on a new line and press Enter.
+
+  > Discussed Q1 revenue: $187k, up 15%
+  > Sarah to hire two engineers
+  > Next meeting June 1
+  > END
+
+
+================================================================================
+QUICK REFERENCE — API CALL
+================================================================================
+
+  from business_assistant.features.meeting_summarizer import MeetingSummarizer
+
+  summarizer = MeetingSummarizer()
+
+  notes = """
+  Reviewed Q1 results. Revenue $187k, +15% QoQ.
+  James to upgrade CRM by May 31.
+  Next meeting June 1.
+  """
+
+  # Direct API call
+  summary = summarizer.summarize(
+      notes=notes,
+      date="May 15, 2026",
+      attendees="Sarah, James, Maria"   # optional
+  )
+  print(summary)
+
+  # Interactive (prompts user for notes and date)
+  summarizer.run()
+
+================================================================================

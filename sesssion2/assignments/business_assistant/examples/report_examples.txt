@@ -1,0 +1,138 @@
+================================================================================
+REPORT GENERATOR — USAGE EXAMPLES
+================================================================================
+Feature: generate_report()  /  ReportGenerator.generate()
+
+Scenario: Sarah needs professional reports for investor meetings, board reviews,
+and quarterly planning sessions at NovaTech Solutions.
+================================================================================
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 1 — Q1 Sales Report
+────────────────────────────────────────────────────────────────────────────────
+Input:
+  report_type : "sales"
+  data        : "Jan:50000, Feb:65000, Mar:72000"
+  period      : "Q1 2026"
+
+Expected output format:
+  ============================================
+  Q1 2026 SALES REPORT
+  ============================================
+  Date: March 31, 2026
+
+  EXECUTIVE SUMMARY
+  NovaTech Solutions delivered strong Q1 2026 performance with total revenue of
+  $187,000, a 15.5% increase over Q4 2025. March was the best month, recording
+  $72,000 — a 44% jump from January.
+
+  KEY METRICS
+  - Total Q1 Revenue:    $187,000
+  - Monthly Average:     $62,333
+  - Best Month:          March ($72,000)
+  - Month-over-Month Growth (Jan→Mar): +44%
+  - Q1 vs Q4 2025 Growth: +15.5%
+
+  ANALYSIS
+  The upward trend across all three months suggests strong pipeline momentum.
+  January's $50,000 reflects post-holiday seasonality, while February and March
+  show accelerating deal closures driven by the enterprise segment...
+
+  RECOMMENDATIONS
+  1. Double down on enterprise outreach — it drove 60% of Q1 revenue.
+  2. Investigate January's slower pace and add promotions to counter seasonality.
+  3. Set a Q2 target of $220,000 based on current growth trajectory.
+  ============================================
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 2 — Quarterly Revenue Report (JSON data format)
+────────────────────────────────────────────────────────────────────────────────
+Input:
+  report_type : "revenue"
+  data        : '{"Q1": 187000, "Q2": 214000, "Q3": 198000, "Q4": 231000}'
+  period      : "FY 2025"
+
+Expected output format:
+  ============================================
+  FY 2025 REVENUE REPORT
+  ============================================
+  Date: December 31, 2025
+
+  EXECUTIVE SUMMARY
+  NovaTech Solutions closed FY 2025 with total annual revenue of $830,000,
+  surpassing the $800K target by 3.75%. Q4 was the strongest quarter at
+  $231,000, while Q3 saw a brief dip before recovering.
+
+  KEY METRICS
+  - Total FY 2025 Revenue:  $830,000
+  - Best Quarter:            Q4 ($231,000)
+  - Weakest Quarter:         Q1 ($187,000)
+  - YoY vs FY 2024:         +22% (target was +18%)
+  - Average Quarterly Rev:   $207,500
+
+  ...
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 3 — Performance Report
+────────────────────────────────────────────────────────────────────────────────
+Input:
+  report_type : "performance"
+  data        : "conversion_rate:12, customer_churn:3, nps_score:72, deals_closed:45"
+  period      : "Q1 2026"
+
+Expected output format:
+  ============================================
+  Q1 2026 PERFORMANCE REPORT
+  ============================================
+
+  EXECUTIVE SUMMARY
+  NovaTech Solutions maintained healthy KPIs in Q1 2026. The 12% conversion
+  rate exceeds the industry benchmark of 8%, while the NPS score of 72 reflects
+  strong customer satisfaction...
+
+  KEY METRICS
+  - Conversion Rate:    12% (industry avg: 8%)
+  - Customer Churn:     3%  (target: <5%) ✓
+  - NPS Score:          72  (target: >60) ✓
+  - Deals Closed:       45
+
+  ...
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 4 — Convenience Wrappers
+────────────────────────────────────────────────────────────────────────────────
+Shorthand methods available:
+  generator.generate_sales_report(data, period)
+  generator.generate_revenue_report(data, period)
+  generator.generate_performance_report(data, period)
+
+These are equivalent to calling generator.generate('sales' | 'revenue' | 'performance', data, period).
+
+
+================================================================================
+QUICK REFERENCE — API CALL
+================================================================================
+
+  from business_assistant.features.report_generator import ReportGenerator
+
+  generator = ReportGenerator()
+
+  # Direct API call
+  report = generator.generate(
+      report_type="sales",
+      data="Jan:50000, Feb:65000, Mar:72000",
+      period="Q1 2026"
+  )
+  print(report)
+
+  # Convenience wrapper
+  report = generator.generate_sales_report("50000,65000,72000", "Q1 2026")
+
+  # Interactive (prompts user for all inputs)
+  generator.run()
+
+================================================================================

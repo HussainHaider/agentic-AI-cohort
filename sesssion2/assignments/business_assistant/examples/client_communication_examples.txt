@@ -1,0 +1,184 @@
+================================================================================
+CLIENT COMMUNICATION DRAFTER — USAGE EXAMPLES
+================================================================================
+Feature: draft_client_communication()  /  ClientCommunicationDrafter.draft()
+
+Scenario: Sarah regularly needs to communicate project updates, proposals,
+and follow-ups with her clients in a polished, professional way.
+================================================================================
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 1 — Project Proposal
+────────────────────────────────────────────────────────────────────────────────
+Input:
+  comm_type   : "project proposal"
+  client_name : "Acme Corp"
+  context     : "Building a custom CRM integration. 3-month timeline. Budget $45,000.
+                 Deliverables: API integration, dashboard, training sessions."
+  tone        : "professional"
+
+Expected output:
+  Dear Acme Corp Team,
+
+  Thank you for the opportunity to present this proposal. NovaTech Solutions is
+  pleased to outline our approach for delivering a custom CRM integration
+  tailored to Acme Corp's operational needs.
+
+  PROJECT OVERVIEW
+  We propose a three-month engagement encompassing API integration between your
+  existing systems and the new CRM platform, a real-time executive dashboard,
+  and two structured training sessions for your team. Our timeline ensures
+  delivery within your Q3 2026 deadline.
+
+  INVESTMENT
+  The total project investment is $45,000, structured across three milestones:
+    • Milestone 1 (Month 1): API integration & testing — $18,000
+    • Milestone 2 (Month 2): Dashboard development — $18,000
+    • Milestone 3 (Month 3): Training & go-live support — $9,000
+
+  NEXT STEPS
+  We would welcome a 30-minute call to walk through this proposal in detail
+  and answer any questions. Please reply to schedule a time that works for you.
+
+  Best regards,
+  [Your Name]
+  NovaTech Solutions
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 2 — Project Status Update
+────────────────────────────────────────────────────────────────────────────────
+Input:
+  comm_type   : "status update"
+  client_name : "RetailFlow Inc"
+  context     : "Month 2 of 3. Backend API complete. Dashboard 70% done.
+                 Minor delay in UI due to design revisions. On track for June 15 launch."
+  tone        : "professional"
+
+Expected output:
+  Dear RetailFlow Inc Team,
+
+  I am writing to provide a progress update on your NovaTech project as we
+  enter the final month of development.
+
+  CURRENT STATUS
+  We are pleased to report that the backend API integration is complete and
+  has passed all quality checks. The executive dashboard is 70% complete,
+  with the core data modules fully functional. A brief delay was introduced
+  by design revisions to the UI layer; however, the team has absorbed this
+  impact and we remain on schedule for the June 15 launch.
+
+  UPCOMING MILESTONES
+  • Week of May 20: Dashboard UI completion and internal testing
+  • Week of May 27: Client UAT (User Acceptance Testing) session
+  • June 8–14:     Final adjustments and go-live preparation
+  • June 15:       Launch
+
+  CALL TO ACTION
+  We would like to schedule a UAT session during the week of May 27.
+  Please reply with your availability and we will confirm a time.
+
+  Best regards,
+  [Your Name]
+  NovaTech Solutions
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 3 — Response to Client Inquiry
+────────────────────────────────────────────────────────────────────────────────
+Input:
+  comm_type   : "response to inquiry"
+  client_name : "BlueSky Logistics"
+  context     : "Client asked about data security practices, GDPR compliance,
+                 and data storage location for the new platform."
+  tone        : "formal"
+
+Expected output:
+  Dear BlueSky Logistics,
+
+  Thank you for your enquiry regarding NovaTech Solutions' data security and
+  compliance practices. We appreciate your diligence in evaluating these
+  important considerations.
+
+  DATA SECURITY
+  Our platform employs AES-256 encryption for data at rest and TLS 1.3 for
+  data in transit. Access is governed by role-based controls with multi-factor
+  authentication enforced for all administrative accounts.
+
+  GDPR COMPLIANCE
+  NovaTech Solutions is fully GDPR-compliant. We act as a Data Processor under
+  Article 28, and a signed Data Processing Agreement (DPA) will be provided
+  as part of the contract. Data Subject Access Requests are fulfilled within
+  72 hours.
+
+  DATA STORAGE
+  All client data is stored in EU-based data centres (Frankfurt, Germany),
+  with no data transferred outside the EEA without explicit consent.
+
+  We are happy to provide our full Security Whitepaper and complete an
+  Information Security questionnaire if required. Please let us know how
+  we can assist further.
+
+  Yours sincerely,
+  [Your Name]
+  NovaTech Solutions
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 4 — Follow-Up Message
+────────────────────────────────────────────────────────────────────────────────
+Input:
+  comm_type   : "follow-up message"
+  client_name : "Zenith Partners"
+  context     : "Sent proposal 2 weeks ago, no response. Want to check in
+                 and offer a quick call to address any questions."
+  tone        : "friendly"
+
+Expected output:
+  Dear Zenith Partners Team,
+
+  I hope this message finds you well! I wanted to follow up on the proposal
+  we shared two weeks ago for the NovaTech integration project.
+
+  We understand that decisions like this require careful consideration, and
+  we want to make sure you have everything you need to move forward confidently.
+  If there are any questions, concerns, or adjustments to the scope you'd like
+  to explore, we are more than happy to hop on a quick 20-minute call.
+
+  Feel free to reply here or book a slot directly at [calendar link].
+
+  Looking forward to hearing from you!
+
+  Warm regards,
+  [Your Name]
+  NovaTech Solutions
+
+
+================================================================================
+QUICK REFERENCE — API CALL
+================================================================================
+
+  from business_assistant.features.client_communication_drafter import ClientCommunicationDrafter
+
+  drafter = ClientCommunicationDrafter()
+
+  # Direct API call
+  result = drafter.draft(
+      comm_type="project proposal",
+      client_name="Acme Corp",
+      context="CRM integration, $45k, 3 months",
+      tone="professional"
+  )
+  print(result)
+
+  # Convenience wrappers
+  drafter.draft_project_proposal(client_name, context, tone="professional but friendly")
+  drafter.draft_status_update(client_name, context, tone="professional")
+  drafter.draft_inquiry_response(client_name, context, tone="professional")
+  drafter.draft_followup(client_name, context, tone="friendly")
+
+  # Interactive (prompts user for all inputs)
+  drafter.run()
+
+================================================================================
