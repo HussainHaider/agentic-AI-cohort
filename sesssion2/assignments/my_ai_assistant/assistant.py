@@ -120,27 +120,61 @@ class SmartSummarizer:
     """
     COMPLETE summarizer with detailed analytics.
     """
-    
+
+    STYLE_DESCRIPTIONS = {
+        "short":    "1-2 concise sentences capturing only the core idea",
+        "medium":   "a well-structured paragraph of 3-4 sentences covering the main points",
+        "detailed": "multiple paragraphs that cover all key points, supporting details, and conclusions",
+    }
+
+    _STYLE_ALIASES = {
+        "short":    "short",
+        "brief":    "short",
+        "quick":    "short",
+        "medium":   "medium",
+        "moderate": "medium",
+        "standard": "medium",
+        "detailed": "detailed",
+        "long":     "detailed",
+        "full":     "detailed",
+        "thorough": "detailed",
+        "complete": "detailed",
+    }
+
+    def _extract_style(self, text: str) -> str:
+        """Return the summary style found in the text, defaulting to 'short'."""
+        text_lower = text.lower()
+        for keyword, style in self._STYLE_ALIASES.items():
+            if keyword in text_lower:
+                return style
+        return "short"
+
     def summarize(self, text, style="short"):
+        style = style.lower()
+        if style not in self.STYLE_DESCRIPTIONS:
+            supported = ", ".join(self.STYLE_DESCRIPTIONS)
+            raise ValueError(f"Unsupported style '{style}'. Choose from: {supported}")
+
         print(f"\n📝 Summarizing ({style} style)...\n")
         
         # Analytics
         word_count = len(text.split())
         sentence_count = text.count('.') + text.count('!') + text.count('?')
         
-        # Style instructions
-        styles = {
-            "short": "1-2 sentences",
-            "medium": "A paragraph (3-4 sentences)",
-            "detailed": "Multiple paragraphs"
-        }
-        
+        style_guidance = self.STYLE_DESCRIPTIONS[style]
+        system_prompt = (
+            "You are an expert summarizer. Your task is to produce accurate, faithful summaries "
+            "that preserve the original meaning without adding opinions or outside information.\n"
+            f"Write the summary as {style_guidance}.\n"
+            "Use clear, plain language. Do not include phrases like 'This text discusses' or 'The author says'."
+        )
+
         # Get summary
         response = client.chat.completions.create(
             model=DEFAULT_MODEL,
             messages=[
-                {"role": "system", "content": f"Summarize as {styles.get(style, styles['short'])}"},
-                {"role": "user", "content": f"Summarize:\n{text}"}
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": f"Summarize the following:\n\n{text}"}
             ],
             temperature=0.3
         )
@@ -310,7 +344,8 @@ class MultiCapabilityAssistant:
             tone = self.email_writer._extract_tone(request)
             return self.email_writer.write(request, tone=tone)
         elif capability == 'summarize':
-            return "Please provide text to summarize."
+            style = self.summarizer._extract_style(request)
+            return self.summarizer.summarize(request, style=style)
         elif capability == 'analyze':
             path_match = re.search(r"['\"]([^'\"]+\.(json|csv|txt))['\"]|(\S+\.(json|csv|txt))", request)
             file_path = path_match.group(1) or path_match.group(3) if path_match else "assignments/my_ai_assistant/sales.json"
@@ -378,7 +413,7 @@ tests = [
 ## sub-component tests
 # "Write a friendly email to a client named Sarah, updating her on the project status and next steps.",
 #    "Summarize the following text: Artificial intelligence is transforming how businesses operate. Companies are using AI for customer service, data analysis, and automation. Machine learning models identify patterns in large datasets. Natural language processing enables computers to understand human language. AI adoption is accelerating across all industries and business sizes. Challenges include data privacy, ethics, and finding skilled professionals.",
-"Analyze 'assignments/my_ai_assistant/sales.json' and report the revenue stats.",
+#"Analyze 'assignments/my_ai_assistant/sales.json' and report the revenue stats.",
 
 ## tools tests
 #    "Calculate what is 15% of 250?",
@@ -388,10 +423,6 @@ tests = [
 #    "What is the current time in Tokyo?",
 #    "Convert 100 meters to feet.",
 #    "Read the contents of 'assignments/my_ai_assistant/sales.json'.",
-
-## DataAnalyzer tests
-   "Analyze 'assignments/my_ai_assistant/sales.json' and report the revenue stats.",
-#    "Analyze 'assignments/my_ai_assistant/sales.json' field: profit",
 ]
 
 for test in tests:

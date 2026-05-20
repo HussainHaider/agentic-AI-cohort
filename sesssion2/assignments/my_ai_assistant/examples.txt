@@ -33,6 +33,26 @@ Warm regards,
 -------------------------------------------------------------------
 
 2. SmartSummarizer
+
+"Summarize the following text: Artificial intelligence is transforming how businesses operate. Companies are using AI for customer service, data analysis, and automation. Machine learning models identify patterns in large datasets. Natural language processing enables computers to understand human language. AI adoption is accelerating across all industries and business sizes. Challenges include data privacy, ethics, and finding skilled professionals.",
+
+📝 Summarizing (short style)...
+
+======================================================================
+📊 SUMMARY ANALYSIS
+======================================================================
+Original: 58 words, ~6 sentences
+Summary: 39 words
+Reduction: 32.8%
+Style: Short
+
+----------------------------------------------------------------------
+SUMMARY
+----------------------------------------------------------------------
+Artificial intelligence is revolutionizing business operations through applications like customer service, data analysis, and automation, with machine learning and natural language processing playing key roles. Despite its widespread adoption, challenges such as data privacy, ethics, and talent acquisition remain.
+----------------------------------------------------------------------
+
+
 3. DataAnalyzer
 
 "Analyze 'assignments/my_ai_assistant/sales.json' and report the revenue stats.",
