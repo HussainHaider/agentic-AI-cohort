@@ -1,0 +1,10 @@
+{
+  "sales_data": [
+    { "month": "January", "revenue": 42000, "units_sold": 320, "region": "North", "profit": 12000 },
+    { "month": "February", "revenue": 38500, "units_sold": 290, "region": "South", "profit": 9800 },
+    { "month": "March", "revenue": 51200, "units_sold": 410, "region": "East", "profit": 15600 },
+    { "month": "April", "revenue": 47800, "units_sold": 375, "region": "West", "profit": 13200 },
+    { "month": "May", "revenue": 63000, "units_sold": 520, "region": "North", "profit": 21000 },
+    { "month": "June", "revenue": 58400, "units_sold": 480, "region": "South", "profit": 18900 }
+  ]
+}

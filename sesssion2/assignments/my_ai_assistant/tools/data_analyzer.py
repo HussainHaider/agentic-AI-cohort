@@ -2,7 +2,11 @@ import json
 
 
 def analyze_data(data_string, operation):
-    data = json.loads(data_string)
+    try:
+        data = json.loads(data_string)
+    except json.JSONDecodeError:
+        # Fallback: handle comma-separated values like "10, 20, 30, 40" (not valid JSON)
+        data = [float(x.strip()) for x in data_string.strip("[]").split(",")]
     if operation == "sum":
         result = sum(data)
     elif operation == "average":

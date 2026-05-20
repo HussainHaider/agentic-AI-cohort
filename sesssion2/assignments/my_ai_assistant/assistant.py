@@ -1,4 +1,5 @@
 import json
+import re
 
 # Import the shared client from the assignments-level config.py.
 # This allows both assignments to share the same provider configuration.
@@ -7,6 +8,9 @@ from ..config import client
 from .tools.calculator import calculate, calculator_tool
 from .tools.web_search import web_search, web_search_tool
 from .tools.data_analyzer import analyze_data, data_analyzer_tool
+from .tools.time_tools import time_converter, time_converter_tool
+from .tools.unit_converter import unit_converter, unit_converter_tool
+from .tools.file_reader import file_reader, file_reader_tool
 
 
 class EnhancedEmailWriter:
@@ -69,16 +73,6 @@ class EnhancedEmailWriter:
         
         return response_message.content
 
-# Test
-writer = EnhancedEmailWriter()
-email = writer.write("Announce new AI features to team")
-
-print("\n" + "=" * 70)
-print("📧 EMAIL")
-print("=" * 70)
-print(email)
-print("=" * 70)
-
 
 class SmartSummarizer:
     """
@@ -128,39 +122,28 @@ class SmartSummarizer:
         print(summary)
         print("-" * 70)
 
-# Test
-summarizer = SmartSummarizer()
-
-sample_text = """Artificial intelligence is transforming how businesses operate.
-Companies are using AI for customer service, data analysis, and automation.
-Machine learning models identify patterns in large datasets.
-Natural language processing enables computers to understand human language.
-AI adoption is accelerating across all industries and business sizes.
-Challenges include data privacy, ethics, and finding skilled professionals."""
-
-summarizer.summarize(sample_text, style="short")
-
 
 class MultiCapabilityAssistant:
     """
     COMPLETE multi-capability assistant.
     
     Features:
-    - Chat with memory
     - Enhanced email writer (with research)
     - Smart summarizer (with analytics)
-    - Calculator, web search, data analysis tools
+    - Calculator, web search, data analysis tools, time conversion, unit conversion, file reading
     
-    This is your PROJECT TEMPLATE - customize it!
     """
     
     def __init__(self):
         # All tools
-        self.tools = [calculator_tool, web_search_tool, data_analyzer_tool]
+        self.tools = [calculator_tool, web_search_tool, data_analyzer_tool, time_converter_tool, unit_converter_tool, file_reader_tool]
         self.functions = {
             "calculate": calculate,
             "web_search": web_search,
-            "analyze_data": analyze_data
+            "analyze_data": analyze_data,
+            "time_converter": time_converter,
+            "unit_converter": unit_converter,
+            "file_reader": file_reader
         }
         
         # Sub-components
@@ -178,7 +161,7 @@ class MultiCapabilityAssistant:
             return 'email'
         elif any(word in request_lower for word in ['summarize', 'summary']):
             return 'summarize'
-        elif any(word in request_lower for word in ['calculate', 'math', 'average']):
+        elif any(word in request_lower for word in ['calculate', 'math', 'average', 'sum', 'convert', 'time in', 'search']) or re.search(r'read\s+(the\s+)?(file|content|contents)', request_lower):
             return 'tools'
         else:
             return 'general'
@@ -252,9 +235,18 @@ class MultiCapabilityAssistant:
 assistant = MultiCapabilityAssistant()
 
 tests = [
-    "Write an email to my team about our Q2 results",
-    "calculate the value: 25% of 160?",
-    "What's the weather like?"
+## sub-component tests
+#    "Write an email to announce new AI features to the team.",
+#    "Summarize the following text: Artificial intelligence is transforming how businesses operate. Companies are using AI for customer service, data analysis, and automation. Machine learning models identify patterns in large datasets. Natural language processing enables computers to understand human language. AI adoption is accelerating across all industries and business sizes. Challenges include data privacy, ethics, and finding skilled professionals.",
+
+## tools tests
+#    "Calculate what is 15% of 250?",
+#    "Search for the latest news on AI advancements.",
+#    "Analyze the data [10, 20, 30, 40] to find the average.",
+#    "Convert 3 PM EST to JST.",
+#    "What is the current time in Tokyo?",
+#    "Convert 100 meters to feet.",
+#    "Read the contents of 'assignments/my_ai_assistant/sales.json'."
 ]
 
 for test in tests:
