@@ -1,4 +1,3 @@
-import json
 from ..tools.web_search import web_search, web_search_tool
 from .base import BaseFeature
 
@@ -53,15 +52,10 @@ class SmartEmailWriter(BaseFeature):
         Returns:
             Formatted email with subject line, greeting, body, and closing.
         """
-        research_context = ""
-        if research_topic:
-            raw = web_search(research_topic)
-            result = json.loads(raw).get("results", "")
-            research_context = f"\nResearch findings to incorporate:\n{result}\n"
-
         system_prompt = (
             "You are an expert business email writer.\n\n"
             f"Write emails appropriate for a {recipient} audience using a {tone} tone.\n"
+            "If you need current information to write the email accurately, use web_search first.\n"
             "Always structure your output in EXACTLY this format:\n\n"
             "Subject: [compelling subject line]\n\n"
             "Dear [appropriate salutation],\n\n"
@@ -72,11 +66,17 @@ class SmartEmailWriter(BaseFeature):
             "Do not add any text outside this structure."
         )
 
+        research_hint = f"\nResearch this topic before writing: {research_topic}" if research_topic else ""
         user_prompt = (
             f"Email purpose: {purpose}\n"
             f"Recipient type: {recipient}\n"
             f"Tone: {tone}"
-            f"{research_context}"
+            f"{research_hint}"
         )
 
-        return self._complete(system_prompt, user_prompt, tools=[web_search_tool], tool_choice="none")
+        return self._complete(
+            system_prompt,
+            user_prompt,
+            functions={"web_search": web_search},
+            tools=[web_search_tool],
+        )
