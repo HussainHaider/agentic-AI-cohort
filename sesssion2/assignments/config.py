@@ -1,5 +1,5 @@
-from openai import OpenAI
 import os
+from openai import OpenAI, AuthenticationError
 from dotenv import load_dotenv
 
 # Shared OpenAI client for all assignments.
@@ -11,12 +11,23 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+try:
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise ValueError("OPENAI_API_KEY is not set. Add it to your .env file.")
 
-DEFAULT_MODEL = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
+    client = OpenAI(api_key=api_key)
+    DEFAULT_MODEL = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
 
-if client.api_key:
     print("✅ API key loaded successfully!")
-    print(f"Key starts with: {client.api_key[:8]}...")
-else:
-    print("❌ API key not found! Check your .env file.")
+    print(f"Key starts with: {api_key[:8]}...")
+
+except ValueError as e:
+    print(f"❌ Configuration error: {e}")
+    raise
+except AuthenticationError as e:
+    print("❌ OpenAI rejected the API key. Verify it at platform.openai.com.")
+    raise
+except Exception as e:
+    print(f"❌ Unexpected error during setup: {e}")
+    raise

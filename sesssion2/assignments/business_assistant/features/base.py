@@ -1,4 +1,12 @@
 import json
+from openai import (
+    AuthenticationError,
+    RateLimitError,
+    APIConnectionError,
+    APITimeoutError,
+    BadRequestError,
+    APIError,
+)
 from ...config import client as openai_client, DEFAULT_MODEL
 
 
@@ -40,28 +48,50 @@ class BaseFeature:
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},
         ]
-        response = self.client.chat.completions.create(
-            model=DEFAULT_MODEL,
-            messages=messages,
-            **kwargs,
-        )
-        response_message = response.choices[0].message
-
-        if functions and response_message.tool_calls:
-            messages.append(response_message)
-            for tool_call in response_message.tool_calls:
-                fn_name = tool_call.function.name
-                fn_args = json.loads(tool_call.function.arguments)
-                result = functions[fn_name](**fn_args)
-                messages.append({
-                    "role": "tool",
-                    "tool_call_id": tool_call.id,
-                    "content": result,
-                })
-            final = self.client.chat.completions.create(
+        try:
+            response = self.client.chat.completions.create(
                 model=DEFAULT_MODEL,
                 messages=messages,
+                **kwargs,
             )
-            return final.choices[0].message.content.strip()
+            response_message = response.choices[0].message
 
-        return response_message.content.strip()
+            if functions and response_message.tool_calls:
+                messages.append(response_message)
+                for tool_call in response_message.tool_calls:
+                    fn_name = tool_call.function.name
+                    fn_args = json.loads(tool_call.function.arguments)
+                    result = functions[fn_name](**fn_args)
+                    messages.append({
+                        "role": "tool",
+                        "tool_call_id": tool_call.id,
+                        "content": result,
+                    })
+                final = self.client.chat.completions.create(
+                    model=DEFAULT_MODEL,
+                    messages=messages,
+                )
+                return final.choices[0].message.content.strip()
+
+            return response_message.content.strip()
+
+        except AuthenticationError as e:
+            raise RuntimeError(
+                "Invalid OpenAI API key. Check your OPENAI_API_KEY environment variable."
+            ) from e
+        except RateLimitError as e:
+            raise RuntimeError(
+                "OpenAI rate limit exceeded. Wait a moment before retrying."
+            ) from e
+        except APIConnectionError as e:
+            raise RuntimeError(
+                "Could not reach the OpenAI API. Check your internet connection."
+            ) from e
+        except APITimeoutError as e:
+            raise RuntimeError(
+                "OpenAI API request timed out. Try again later."
+            ) from e
+        except BadRequestError as e:
+            raise ValueError(f"Invalid API request: {e}") from e
+        except APIError as e:
+            raise RuntimeError(f"OpenAI API error ({e.status_code}): {e.message}") from e
