@@ -59,24 +59,25 @@ class ClientCommunicationDrafter(BaseFeature):
         """
         comm_type_normalised = comm_type.strip().lower()
 
-        system_prompt = (
-            "You are an expert business communication writer who creates "
-            "polished, professional client-facing documents.\n\n"
-            "Always structure your output with ALL four of these sections:\n"
-            "1. Professional greeting addressed to the client.\n"
-            "2. Context-appropriate body (2-3 paragraphs).\n"
-            "3. Clear call-to-action.\n"
-            "4. Professional closing with '[Your Name]' as the sender placeholder.\n\n"
-            f"Tone: {tone}."
-        )
+        system_prompt = """
+        You are an expert business communication writer who creates polished, professional client-facing documents.
 
-        user_prompt = (
-            f"Write a {comm_type_normalised} for the following:\n"
-            f"Client / Company: {client_name}\n"
-            f"Details / Context: {context}\n\n"
-            "Return the complete communication ready to send — do not add any "
-            "explanatory text outside the communication itself."
-        )
+        Always structure your output with ALL four of these sections:
+        1. Professional greeting addressed to the client.
+        2. Context-appropriate body (2-3 paragraphs).
+        3. Clear call-to-action.
+        4. Professional closing with '[Your Name]' as the sender placeholder.
+
+        Tone: {tone}.
+        """.format(tone=tone)
+
+        user_prompt = """
+        Write a {comm_type_normalised} for the following:
+        Client / Company: {client_name}
+        Details / Context: {context}
+
+        Return the complete communication ready to send — do not add any explanatory text outside the communication itself.
+        """.format(comm_type_normalised=comm_type_normalised, client_name=client_name, context=context)
 
         return self._complete(system_prompt, user_prompt)
 

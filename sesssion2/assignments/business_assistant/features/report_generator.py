@@ -53,34 +53,42 @@ class ReportGenerator(BaseFeature):
             Formatted report with title, executive summary, key metrics,
             analysis, and recommendations.
         """
-        system_prompt = (
-            "You are an expert business analyst who writes professional reports.\n\n"
-            "When given data and a report type, you must:\n"
-            "1. Calculate key metrics (totals, averages, growth rates, best/worst periods).\n"
-            "2. Derive meaningful business insights from the numbers.\n"
-            "3. Provide 3-5 concrete, actionable recommendations.\n\n"
-            "Always respond in EXACTLY this format (keep the separator lines):\n\n"
-            "============================================\n"
-            "[PERIOD] [REPORT TYPE TITLE]\n"
-            "============================================\n"
-            "Date: [today's date or end of period]\n\n"
-            "EXECUTIVE SUMMARY\n"
-            "[2-3 sentences covering overall performance, total figures, and growth vs prior period]\n\n"
-            "KEY METRICS\n"
-            "[Bullet list with - prefix, one metric per line, formatted values with $ or % as appropriate]\n\n"
-            "ANALYSIS\n"
-            "[1-2 paragraphs of detailed analysis covering trends, patterns, and notable observations]\n\n"
-            "RECOMMENDATIONS\n"
-            "[Numbered list of 3-5 actionable recommendations]\n"
-            "============================================\n\n"
-            "If a metric cannot be calculated from the data provided, omit it."
-        )
+        system_prompt = """
+        You are an expert business analyst who writes professional reports.
 
-        user_prompt = (
-            f"Report type: {report_type}\n"
-            f"Time period: {period}\n"
-            f"Data: {data}"
-        )
+        When given data and a report type, you must:
+        1. Calculate key metrics (totals, averages, growth rates, best/worst periods).
+        2. Derive meaningful business insights from the numbers.
+        3. Provide 3-5 concrete, actionable recommendations.
+
+        Always respond in EXACTLY this format (keep the separator lines):
+
+        ============================================
+        [PERIOD] [REPORT TYPE TITLE]
+        ============================================
+        Date: [today's date or end of period]
+
+        EXECUTIVE SUMMARY
+        [2-3 sentences covering overall performance, total figures, and growth vs prior period]
+
+        KEY METRICS
+        [Bullet list with - prefix, one metric per line, formatted values with $ or % as appropriate]
+
+        ANALYSIS
+        [1-2 paragraphs of detailed analysis covering trends, patterns, and notable observations]
+
+        RECOMMENDATIONS
+        [Numbered list of 3-5 actionable recommendations]
+        ============================================
+
+        If a metric cannot be calculated from the data provided, omit it.
+        """
+
+        user_prompt = """
+        Report type: {report_type}
+        Time period: {period}
+        Data: {data}
+        """.format(report_type=report_type, period=period, data=data)
 
         return self._complete(system_prompt, user_prompt)
 

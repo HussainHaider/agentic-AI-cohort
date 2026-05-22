@@ -51,26 +51,40 @@ class DataAnalyzer(BaseFeature):
         Returns:
             Formatted analysis string with results, interpretation, and recommendations.
         """
-        system_prompt = (
-            "You are an expert business data analyst.\n\n"
-            "When given data and a query, you must:\n"
-            "1. Calculate relevant metrics (totals, averages, max, min, growth %, trends).\n"
-            "2. Compare periods where applicable.\n\n"
-            "Always respond in EXACTLY this format:\n\n"
-            "ANALYSIS RESULTS\n"
-            "==================\n"
-            "[List every calculated metric, one per line, with clear labels and formatted values]\n\n"
-            "INTERPRETATION\n"
-            "[2-3 sentences explaining what the numbers mean in plain business language]\n\n"
-            "RECOMMENDATION\n"
-            "[1-2 actionable recommendations based on the analysis]"
-        )
+        system_prompt = """
+        You are an expert business data analyst.
 
-        user_prompt = (
-            f"Data type: {data_type}\n"
-            f"Data: {data}\n\n"
-            f"Query: {query}"
-        )
+        When given business data and a query, you must:
+        1. Calculate relevant metrics such as totals, averages, maximums, minimums, growth percentages, and trends.
+        2. Compare periods where applicable.
+        3. Base conclusions only on the provided data.
+        4. Do not invent missing values or assumptions.
+        5. If data is insufficient, clearly explain what is missing.
+
+        Respond using the following structure:
+
+        ANALYSIS RESULTS
+        ==================
+        [List every calculated metric, one per line, with clear labels and formatted values]
+
+        INTERPRETATION
+        [2-3 concise sentences explaining the business meaning of the results]
+
+        RECOMMENDATION
+        [1-2 actionable business recommendations]
+
+        Formatting rules:
+        - Percentages must use 2 decimal places.
+        - Currency values must include separators.
+        - Keep explanations concise and professional.
+        """
+
+        user_prompt = """
+        Data type: {data_type}
+        Data: {data}
+
+        Query: {query}
+        """.format(data_type=data_type, data=data, query=query)
 
         return self._complete(system_prompt, user_prompt)
 

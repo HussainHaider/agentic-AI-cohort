@@ -52,27 +52,32 @@ class SmartEmailWriter(BaseFeature):
         Returns:
             Formatted email with subject line, greeting, body, and closing.
         """
-        system_prompt = (
-            "You are an expert business email writer.\n\n"
-            f"Write emails appropriate for a {recipient} audience using a {tone} tone.\n"
-            "If you need current information to write the email accurately, use web_search first.\n"
-            "Always structure your output in EXACTLY this format:\n\n"
-            "Subject: [compelling subject line]\n\n"
-            "Dear [appropriate salutation],\n\n"
-            "[3-5 body paragraphs]\n\n"
-            "[Professional closing],\n"
-            "[Your Name]\n"
-            "[Title], [Company Name]\n\n"
-            "Do not add any text outside this structure."
-        )
+        system_prompt = """
+        You are an expert business email writer.
 
-        research_hint = f"\nResearch this topic before writing: {research_topic}" if research_topic else ""
-        user_prompt = (
-            f"Email purpose: {purpose}\n"
-            f"Recipient type: {recipient}\n"
-            f"Tone: {tone}"
-            f"{research_hint}"
-        )
+        Write emails appropriate for a {recipient} audience using a {tone} tone.
+        If you need current information to write the email accurately, use web_search first.
+        Always structure your output in EXACTLY this format:
+
+        Subject: [compelling subject line]
+
+        Dear [appropriate salutation],
+
+        [3-5 body paragraphs]
+
+        [Professional closing],
+        [Your Name]
+        [Title], [Company Name]
+
+        Do not add any text outside this structure.
+        """.format(recipient=recipient, tone=tone)
+
+        research_hint = "\nResearch this topic before writing: " + research_topic if research_topic else ""
+        user_prompt = """
+        Email purpose: {purpose}
+        Recipient type: {recipient}
+        Tone: {tone}{research_hint}
+        """.format(purpose=purpose, recipient=recipient, tone=tone, research_hint=research_hint)
 
         return self._complete(
             system_prompt,

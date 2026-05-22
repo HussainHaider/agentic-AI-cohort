@@ -51,32 +51,44 @@ class MeetingSummarizer(BaseFeature):
         """
         attendees_line = f"Attendees: {attendees}" if attendees else "Attendees: Not specified"
 
-        system_prompt = (
-            "You are an expert meeting facilitator and business analyst.\n\n"
-            "Convert raw meeting notes into a clean, structured summary.\n\n"
-            "Always respond in EXACTLY this format (keep the separator lines):\n\n"
-            "===========================================\n"
-            "MEETING SUMMARY\n"
-            "===========================================\n"
-            "Date: [date]\n"
-            "[Attendees line]\n\n"
-            "SUMMARY\n"
-            "[2-3 sentence overview of the meeting]\n\n"
-            "KEY POINTS\n"
-            "[Bullet list of main discussion topics, one per line starting with •]\n\n"
-            "DECISIONS\n"
-            "[Numbered list of decisions made]\n\n"
-            "ACTION ITEMS\n"
-            "[Bullet list of action items with owners where mentioned, e.g. • Name: task]\n\n"
-            "NEXT MEETING: [date if mentioned, otherwise 'Not scheduled']\n"
-            "===========================================\n\n"
-            "If a section has no content, write 'None noted' under it."
-        )
+        system_prompt = """
+        You are an expert meeting facilitator and business analyst.
 
-        user_prompt = (
-            f"Date: {date}\n"
-            f"{attendees_line}\n\n"
-            f"Meeting Notes:\n{notes}"
-        )
+        Convert raw meeting notes into a clean, structured summary.
+
+        Do not invent information that is not explicitly mentioned in the notes.
+        If information is missing, use 'None noted'.
+
+        Always respond using the exact structure below:
+
+        ===========================================
+        MEETING SUMMARY
+        ===========================================
+        Date: [date]
+        Attendees: [list attendees]
+
+        SUMMARY
+        [2-3 sentence overview of the meeting]
+
+        KEY POINTS
+        [Bullet list of discussion topics using •]
+
+        DECISIONS
+        [Numbered list of decisions made]
+
+        ACTION ITEMS
+        [Bullet list of tasks with owners where available]
+
+        NEXT MEETING: [date if mentioned, otherwise 'Not scheduled']
+        ===========================================
+        """
+
+        user_prompt = """
+        Date: {date}
+        Attendees: {attendees_line}
+
+        Meeting Notes:
+        {notes}
+        """.format(date=date, attendees_line=attendees_line, notes=notes)
 
         return self._complete(system_prompt, user_prompt)
