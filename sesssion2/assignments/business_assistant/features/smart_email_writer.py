@@ -1,0 +1,87 @@
+from ..tools.web_search import web_search, web_search_tool
+from .base import BaseFeature
+
+RECIPIENT_TYPES = ["client", "team", "stakeholder", "supplier"]
+TONE_OPTIONS = ["formal", "professional", "friendly"]
+
+
+class SmartEmailWriter(BaseFeature):
+    """Feature 1: Writes professional business emails with optional market research."""
+
+
+    def get_inputs(self) -> dict:
+        """Collect all required inputs interactively from the user."""
+        print("\n--- Smart Email Writer ---")
+
+        print("Recipient types: " + ", ".join(RECIPIENT_TYPES))
+        purpose = input("\nEnter email purpose: ").strip()
+        recipient = input("Enter recipient type (client / team / stakeholder / supplier): ").strip()
+
+        print("Tone options: " + ", ".join(TONE_OPTIONS))
+        tone = input("Enter tone (formal / professional / friendly) [professional]: ").strip()
+        if not tone:
+            tone = "professional"
+
+        research_topic = input("Enter a topic to research (or press Enter to skip): ").strip()
+
+        return {
+            "purpose": purpose,
+            "recipient": recipient,
+            "tone": tone,
+            "research_topic": research_topic if research_topic else None,
+        }
+
+    def run(self) -> str:
+        """Collect inputs interactively, write the email, and print it."""
+        inputs = self.get_inputs()
+        result = self.write(**inputs)
+        print("\n--- Generated Email ---\n")
+        print(result)
+        return result
+
+    def write(self, purpose: str, recipient: str, tone: str, research_topic: str = None) -> str:
+        """
+        Write a professional business email.
+
+        Args:
+            purpose:        What the email should accomplish.
+            recipient:      Type of recipient (client, team, stakeholder, supplier).
+            tone:           Desired tone (formal, professional, friendly).
+            research_topic: Optional topic to research before writing.
+
+        Returns:
+            Formatted email with subject line, greeting, body, and closing.
+        """
+        system_prompt = """
+        You are an expert business email writer.
+
+        Write emails appropriate for a {recipient} audience using a {tone} tone.
+        If you need current information to write the email accurately, use web_search first.
+        Always structure your output in EXACTLY this format:
+
+        Subject: [compelling subject line]
+
+        Dear [appropriate salutation],
+
+        [3-5 body paragraphs]
+
+        [Professional closing],
+        [Your Name]
+        [Title], [Company Name]
+
+        Do not add any text outside this structure.
+        """.format(recipient=recipient, tone=tone)
+
+        research_hint = "\nResearch this topic before writing: " + research_topic if research_topic else ""
+        user_prompt = """
+        Email purpose: {purpose}
+        Recipient type: {recipient}
+        Tone: {tone}{research_hint}
+        """.format(purpose=purpose, recipient=recipient, tone=tone, research_hint=research_hint)
+
+        return self._complete(
+            system_prompt,
+            user_prompt,
+            functions={"web_search": web_search},
+            tools=[web_search_tool],
+        )

@@ -1,6 +1,14 @@
 import json
 import re
 
+from openai import (
+    AuthenticationError,
+    RateLimitError,
+    APIConnectionError,
+    APITimeoutError,
+    BadRequestError,
+    APIError,
+)
 from ..config import client, DEFAULT_MODEL
 
 from .tools.calculator import calculate, calculator_tool
@@ -59,6 +67,73 @@ class MultiCapabilityAssistant:
         print("  Ready! Type any request and it will be routed automatically.")
         print("=" * 70 + "\n")
     
+    def call_gpt(self, messages, **kwargs):
+        """Call the chat completions API and return the response text.
+
+        Handles the tool-call loop automatically: if the model returns tool
+        calls, each tool is executed and its result is fed back to the model
+        for a final response.
+
+        Args:
+            messages: The list of message dicts to send.
+            **kwargs: Any extra keyword arguments forwarded to
+                      ``chat.completions.create`` (e.g. ``tools=``).
+
+        Returns:
+            The assistant's reply as a string.
+        """
+        try:
+            response = client.chat.completions.create(
+                model=DEFAULT_MODEL,
+                messages=messages,
+                **kwargs,
+            )
+            response_message = response.choices[0].message
+
+            if response_message.tool_calls:
+                messages.append(response_message)
+                for tool_call in response_message.tool_calls:
+                    function_name = tool_call.function.name
+                    function_args = json.loads(tool_call.function.arguments)
+                    print(f"🔧 Using {function_name}...")
+                    try:
+                        result = self.functions[function_name](**function_args)
+                    except Exception as e:
+                        result = f"Tool failed: {e}"
+                    messages.append({
+                        "role": "tool",
+                        "tool_call_id": tool_call.id,
+                        "content": result,
+                    })
+                final = client.chat.completions.create(
+                    model=DEFAULT_MODEL,
+                    messages=messages,
+                )
+                return final.choices[0].message.content
+
+            return response_message.content
+
+        except AuthenticationError as e:
+            raise RuntimeError(
+                "Invalid OpenAI API key. Check your OPENAI_API_KEY environment variable."
+            ) from e
+        except RateLimitError as e:
+            raise RuntimeError(
+                "OpenAI rate limit exceeded. Wait a moment before retrying."
+            ) from e
+        except APIConnectionError as e:
+            raise RuntimeError(
+                "Could not reach the OpenAI API. Check your internet connection."
+            ) from e
+        except APITimeoutError as e:
+            raise RuntimeError(
+                "OpenAI API request timed out. Try again later."
+            ) from e
+        except BadRequestError as e:
+            raise ValueError(f"Invalid API request: {e}") from e
+        except APIError as e:
+            raise RuntimeError(f"OpenAI API error ({e.status_code}): {e.message}") from e
+
     def route_request(self, request):
         """Decide which capability to use"""
         request_lower = request.lower()
@@ -104,52 +179,12 @@ class MultiCapabilityAssistant:
     def use_tools(self, query):
         """Use tools to answer query"""
         messages = [{"role": "user", "content": query}]
-        
-        response = client.chat.completions.create(
-            model=DEFAULT_MODEL,
-            messages=messages,
-            tools=self.tools
-        )
-        
-        response_message = response.choices[0].message
-        
-        if not response_message.tool_calls:
-            return response_message.content
-        
-        messages.append(response_message)
-        
-        for tool_call in response_message.tool_calls:
-            function_name = tool_call.function.name
-            function_args = json.loads(tool_call.function.arguments)
-            
-            print(f"🔧 Using {function_name}...")
-            
-            try:
-                result = self.functions[function_name](**function_args)
-            except Exception as e:
-                result = f"Search failed: {e}"
-            
-            messages.append({
-                "role": "tool",
-                "tool_call_id": tool_call.id,
-                "content": result
-            })
-        
-        final_response = client.chat.completions.create(
-            model=DEFAULT_MODEL,
-            messages=messages
-        )
-        
-        return final_response.choices[0].message.content
+        return self.call_gpt(messages, tools=self.tools)
     
     def general_assistant(self, query):
         """General purpose assistant"""
-        response = client.chat.completions.create(
-            model=DEFAULT_MODEL,
-            messages=[{"role": "user", "content": query}],
-            tools=self.tools
-        )
-        return response.choices[0].message.content
+        messages = [{"role": "user", "content": query}]
+        return self.call_gpt(messages, tools=self.tools)
 
 
 if __name__ == "__main__":
