@@ -1,3 +1,6 @@
+from ..tools.data_analyzer import analyze_data, data_analyzer_tool
+from ..tools.calculator import calculate, calculator_tool
+
 from .base import BaseFeature
 
 REPORT_TYPES = {
@@ -57,7 +60,7 @@ class ReportGenerator(BaseFeature):
         You are an expert business analyst who writes professional reports.
 
         When given data and a report type, you must:
-        1. Calculate key metrics (totals, averages, growth rates, best/worst periods).
+        1. Calculate key metrics (totals, averages, growth rates, best/worst periods) using tools like calculate and analyze_data.
         2. Derive meaningful business insights from the numbers.
         3. Provide 3-5 concrete, actionable recommendations.
 
@@ -90,7 +93,12 @@ class ReportGenerator(BaseFeature):
         Data: {data}
         """.format(report_type=report_type, period=period, data=data)
 
-        return self._complete(system_prompt, user_prompt)
+        return self._complete(
+            system_prompt,
+            user_prompt,
+            functions={"calculate": calculate, "analyze_data": analyze_data},
+            tools=[data_analyzer_tool, calculator_tool],
+        )
 
     # ------------------------------------------------------------------
     # Convenience wrappers for each report type

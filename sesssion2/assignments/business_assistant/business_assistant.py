@@ -114,3 +114,8 @@ class BusinessAssistant:
             if not should_continue:
                 break
             print("\nTask complete! What would you like to do next?")
+
+
+if __name__ == "__main__":
+    assistant = BusinessAssistant()
+    assistant.run()

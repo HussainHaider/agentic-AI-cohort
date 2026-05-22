@@ -1,3 +1,5 @@
+from ..tools.calculator import calculate, calculator_tool
+
 from .base import BaseFeature
 
 DATA_TYPES = {
@@ -55,7 +57,7 @@ class DataAnalyzer(BaseFeature):
         You are an expert business data analyst.
 
         When given business data and a query, you must:
-        1. Calculate relevant metrics such as totals, averages, maximums, minimums, growth percentages, and trends.
+        1. Calculate relevant metrics (totals, averages, min/max, growth rates, and trends) using the calculate tool whenever numeric computation is required.
         2. Compare periods where applicable.
         3. Base conclusions only on the provided data.
         4. Do not invent missing values or assumptions.
@@ -86,7 +88,12 @@ class DataAnalyzer(BaseFeature):
         Query: {query}
         """.format(data_type=data_type, data=data, query=query)
 
-        return self._complete(system_prompt, user_prompt)
+        return self._complete(
+            system_prompt,
+            user_prompt,
+            functions={"calculate": calculate},
+            tools=[calculator_tool],
+        )
 
     # ------------------------------------------------------------------
     # Convenience wrappers for each supported data type

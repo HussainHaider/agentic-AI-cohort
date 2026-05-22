@@ -75,7 +75,15 @@ echo "OPENAI_API_KEY=sk-..." > .env
 
 ## Usage
 
-### Interactive loop
+### Run from the command line
+
+From the `sesssion2/` directory:
+
+```bash
+python -m assignments.business_assistant.business_assistant
+```
+
+### Interactive loop (programmatic)
 
 ```python
 from assignments.business_assistant.business_assistant import BusinessAssistant
