@@ -1,3 +1,4 @@
+from .features.base import BaseFeature
 from .tools.calculator import calculator_tool, calculate
 from .tools.web_search import web_search_tool, web_search
 from .tools.data_analyzer import data_analyzer_tool, analyze_data
@@ -10,10 +11,11 @@ from .features.report_generator import ReportGenerator
 from .features.smart_email_writer import SmartEmailWriter
 
 
-class BusinessAssistant:
+class BusinessAssistant(BaseFeature):
     """Main business assistant class"""
 
     def __init__(self):
+        super().__init__()
         # Initialize all tools
         self.tools = [calculator_tool, web_search_tool,
                       data_analyzer_tool, report_formatter_tool]
@@ -85,10 +87,21 @@ class BusinessAssistant:
             self.draft_client_communication()
 
         else:
-            print("\nSorry, I didn't understand that. Here's what I can do:")
-            self._print_capabilities()
+            result = self.general_assistant(request)
+            print(f"\n{result}")
 
         return True
+
+    def general_assistant(self, query):
+        """General purpose assistant that uses available tools."""
+        return self._complete(
+            system_prompt="""You are a helpful business assistant.
+            Use given tools to answer the user's query if possible.
+            If the query is outside the scope of the tools, provide a helpful response based on your knowledge.""",
+            user_prompt=query,
+            functions=self.functions,
+            tools=self.tools,
+        )
 
     def _print_capabilities(self):
         """Print the list of supported features."""

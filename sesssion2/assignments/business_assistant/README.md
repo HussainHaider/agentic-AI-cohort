@@ -25,8 +25,8 @@ Imagine: **Sarah runs a small tech company (NovaTech Solutions)**. She needs to:
 | 2 | **Report Generator** | `report`, `generate report`, `create report`, `investor` |
 | 3 | **Meeting Summarizer** | `meeting`, `summarize`, `action items`, `minutes`, `notes` |
 | 4 | **Business Data Analyzer** | `analyze`, `analysis`, `data`, `sales data`, `financial data` |
-| 5 | **Client Communication Drafter** | `client`, `draft`, `proposal`, `follow-up`, `status update` |
-
+| 5 | **Client Communication Drafter** | `client`, `draft`, `proposal`, `follow-up`, `status update`|
+| 6 | **General Assistant (Tools)** | anything else will uses tools or get general answer |
 ---
 
 ## Project Structure
@@ -51,7 +51,8 @@ business_assistant/
 │   ├── report_examples.txt
 │   ├── meeting_examples.txt
 │   ├── data_analysis_examples.txt
-│   └── client_communication_examples.txt
+│   ├── client_communication_examples.txt
+│   └── tools.txt                        # General assistant: calculator & web search
 └── tests/
     └── test_features.py        # 61 unit tests (no API calls needed)
 ```
@@ -126,6 +127,18 @@ How can I help you? > summarize last meeting
 
 Task complete! What would you like to do next?
 
+How can I help you? > What is 45% of 200
+
+45% of 200 is 90.
+
+Task complete! What would you like to do next?
+
+How can I help you? > what is market trends now a days?
+
+One of the current market trends is that the tech sector is showing a 15% growth in the first quarter of 2026.
+
+Task complete! What would you like to do next?
+
 How can I help you? > quit
 Goodbye! Have a productive day!
 ```
@@ -196,3 +209,12 @@ python -m pytest assignments/business_assistant/tests/test_features.py -v
 ## Examples
 
 See the `examples/` folder for realistic input/output samples for each feature, all based on the Sarah / NovaTech Solutions scenario.
+
+| File | Feature |
+|------|---------|
+| `email_examples.txt` | Smart Email Writer |
+| `report_examples.txt` | Report Generator |
+| `meeting_examples.txt` | Meeting Summarizer |
+| `data_analysis_examples.txt` | Business Data Analyzer |
+| `client_communication_examples.txt` | Client Communication Drafter |
+| `tools.txt` | General Assistant — calculator & web search tools |

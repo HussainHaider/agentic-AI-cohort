@@ -1,0 +1,286 @@
+================================================================================
+GENERAL ASSISTANT (TOOLS) — USAGE EXAMPLES
+================================================================================
+Feature: general_assistant()  —  fallback handler in BusinessAssistant
+
+When a user's request does not match any of the five dedicated features, the
+assistant falls back to general_assistant(), which passes ALL four registered
+tools to OpenAI and lets the model decide which one(s) to call:
+
+  Tool 1 — calculate       evaluate math expressions (eval-based)
+  Tool 2 — web_search      live search returning curated business info
+  Tool 3 — analyze_data    sum / average / max / min over a list of numbers
+  Tool 4 — format_report   return a structured template (sections + header)
+
+Scenario: Sarah (NovaTech Solutions) asks quick questions that sit outside
+the five main feature areas.
+
+⚠  ROUTING NOTE — The following keywords route to dedicated features instead:
+   email / draft an email / write an email / compose
+   report / investor / generate report / create report
+   meeting / summarize / action item / minutes / notes
+   analyze / analysis / data / sales data / financial data
+   client / communication / draft / proposal / follow-up / status update
+   None of the example prompts below contain any of these keywords.
+================================================================================
+
+
+════════════════════════════════════════════════════════════════════════════════
+TOOL 1 — calculate
+Evaluates a Python math expression and returns {"result": <value>}.
+════════════════════════════════════════════════════════════════════════════════
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 1a — Percentage of a value
+────────────────────────────────────────────────────────────────────────────────
+Input prompt:
+  "What is 45% of 200?"
+
+Tool called:
+  calculate("0.45 * 200")
+
+Expected output:
+  45% of 200 is 90.
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 1b — Profit margin
+────────────────────────────────────────────────────────────────────────────────
+Input prompt:
+  "What is the profit margin if revenue is 120000 and costs are 84000?"
+
+Tool called:
+  calculate("(120000 - 84000) / 120000 * 100")
+
+Expected output:
+  The profit margin is 30%. Net profit is $36,000 on $120,000 revenue.
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 1c — Growth rate between two periods
+────────────────────────────────────────────────────────────────────────────────
+Input prompt:
+  "Revenue went from 50000 to 72000. What is the growth rate?"
+
+Tool called:
+  calculate("(72000 - 50000) / 50000 * 100")
+
+Expected output:
+  The growth rate is 44%. Revenue increased by $22,000.
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 1d — Compound annual growth rate (CAGR)
+────────────────────────────────────────────────────────────────────────────────
+Input prompt:
+  "What is the CAGR from 200000 to 350000 over 3 years?"
+
+Tool called:
+  calculate("((350000/200000)**(1/3) - 1) * 100")
+
+Expected output:
+  The CAGR is approximately 20.5% per year over 3 years.
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 1e — Tax on a purchase
+────────────────────────────────────────────────────────────────────────────────
+Input prompt:
+  "How much is 15% tax on a $5,000 purchase?"
+
+Tool called:
+  calculate("5000 * 0.15")
+
+Expected output:
+  15% tax on $5,000 is $750. Total with tax is $5,750.
+
+
+════════════════════════════════════════════════════════════════════════════════
+TOOL 2 — web_search
+Searches for business information using keyword matching.
+Recognised keywords: "market trends", "industry news",
+                     "best practices", "competitor"
+════════════════════════════════════════════════════════════════════════════════
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 2a — Current market trends
+────────────────────────────────────────────────────────────────────────────────
+Input prompt:
+  "What are the market trends now a days?"
+
+Tool called:
+  web_search("current market trends 2026")
+
+Expected output:
+  One of the current market trends is that the tech sector is showing a 15%
+  growth in the first quarter of 2026.
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 2b — Latest industry news
+────────────────────────────────────────────────────────────────────────────────
+Input prompt:
+  "What is the latest industry news in tech?"
+
+Tool called:
+  web_search("latest industry news tech 2026")
+
+Expected output:
+  AI adoption is increasing across all sectors in 2026.
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 2c — Best practices lookup
+────────────────────────────────────────────────────────────────────────────────
+Input prompt:
+  "What are the best practices for onboarding new enterprise customers?"
+
+Tool called:
+  web_search("best practices enterprise customer onboarding")
+
+Expected output:
+  Best practices include personalised welcome sequences, clear calls-to-action,
+  and dedicated onboarding managers for high-value accounts.
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 2d — Competitor landscape
+────────────────────────────────────────────────────────────────────────────────
+Input prompt:
+  "What are our main competitor companies doing right now?"
+
+Tool called:
+  web_search("competitor landscape 2026")
+
+Expected output:
+  Main competitors are expanding to new markets and investing heavily in
+  AI-powered product features.
+
+
+════════════════════════════════════════════════════════════════════════════════
+TOOL 3 — analyze_data
+Runs sum / average / max / min on a list of numbers supplied as a
+JSON array string or comma-separated values.
+⚠  Avoid the words "analyze", "analysis", or "data" in the prompt —
+   those keywords route to the dedicated DataAnalyzer feature instead.
+════════════════════════════════════════════════════════════════════════════════
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 3a — Average of a set of figures
+────────────────────────────────────────────────────────────────────────────────
+Input prompt:
+  "What is the average of these monthly figures: 85000, 92000, 78000, 96000?"
+
+Tool called:
+  analyze_data("[85000, 92000, 78000, 96000]", "average")
+
+Expected output:
+  The average monthly figure is $87,750.
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 3b — Total / sum
+────────────────────────────────────────────────────────────────────────────────
+Input prompt:
+  "What is the total of 45000, 62000, 78000, and 55000?"
+
+Tool called:
+  analyze_data("[45000, 62000, 78000, 55000]", "sum")
+
+Expected output:
+  The total is $240,000.
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 3c — Peak / highest value
+────────────────────────────────────────────────────────────────────────────────
+Input prompt:
+  "Which is the highest number among 120, 340, 280, 195, 410?"
+
+Tool called:
+  analyze_data("[120, 340, 280, 195, 410]", "max")
+
+Expected output:
+  The highest value is 410.
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 3d — Lowest value
+────────────────────────────────────────────────────────────────────────────────
+Input prompt:
+  "What is the lowest monthly figure from 32000, 41000, 28000, 55000?"
+
+Tool called:
+  analyze_data("[32000, 41000, 28000, 55000]", "min")
+
+Expected output:
+  The lowest monthly figure is $28,000.
+
+
+════════════════════════════════════════════════════════════════════════════════
+TOOL 4 — format_report
+Returns a structured report template (header + section list + timestamp).
+Supported report_type values: "sales", "quarterly", "annual"
+⚠  Avoid the words "report", "generate report", "create report", or
+   "investor" — those route to the dedicated ReportGenerator instead.
+════════════════════════════════════════════════════════════════════════════════
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 4a — Quarterly structure
+────────────────────────────────────────────────────────────────────────────────
+Input prompt:
+  "Give me a structured template for presenting Q1 2026 performance numbers."
+
+Tool called:
+  format_report("quarterly", "...", "Q1 2026")
+
+Expected output:
+  Here is a quarterly structure for Q1 2026:
+    Header  : Q1 2026 Quarterly Report
+    Sections: Overview | Financial Highlights | Operational Updates | Next Steps
+    Date    : May 22, 2026
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 4b — Annual structure
+────────────────────────────────────────────────────────────────────────────────
+Input prompt:
+  "How should I structure a year-end executive summary for 2025?"
+
+Tool called:
+  format_report("annual", "...", "2025")
+
+Expected output:
+  Here is an annual structure for 2025:
+    Header  : 2025 Annual Report
+    Sections: Year in Review | Financial Summary | Strategic Initiatives |
+              Outlook for Next Year
+    Date    : May 22, 2026
+
+
+────────────────────────────────────────────────────────────────────────────────
+EXAMPLE 4c — Sales performance structure
+────────────────────────────────────────────────────────────────────────────────
+Input prompt:
+  "What sections should I use when presenting our February performance numbers?"
+
+Tool called:
+  format_report("sales", "...", "February 2026")
+
+Expected output:
+  Here is a sales structure for February 2026:
+    Header  : February 2026 Sales Performance Report
+    Sections: Executive Summary | Key Metrics | Analysis | Recommendations
+    Date    : May 22, 2026
+
+
+────────────────────────────────────────────────────────────────────────────────
+NOTES
+────────────────────────────────────────────────────────────────────────────────
+• general_assistant is triggered automatically when NONE of the five feature
+  routing keywords match the user's input.
+• All four tools are passed to the model simultaneously; OpenAI selects the
+  most appropriate one (or none, if a direct answer is sufficient).
+• Tool calls may chain — e.g. calculate a total then format_report to wrap it.
+• If no tool is needed, the model answers directly from its training knowledge.
+================================================================================
